@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=3 uid="uid://ciw2tmdy1hnc6"]
+[gd_scene load_steps=15 format=3 uid="uid://ciw2tmdy1hnc6"]
 
 [ext_resource type="Texture2D" uid="uid://cgfkce2s0ylyl" path="res://art/CharacterSpriteSheet.png" id="1_4pvmd"]
 [ext_resource type="Script" path="res://ai/ai_actor.gd" id="1_hcyw6"]
@@ -11,6 +11,18 @@ region = Rect2(0, 0, 16, 16)
 [sub_resource type="AtlasTexture" id="AtlasTexture_ekxi0"]
 atlas = ExtResource("1_4pvmd")
 region = Rect2(16, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_l1au2"]
+atlas = ExtResource("1_4pvmd")
+region = Rect2(64, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_2fmn4"]
+atlas = ExtResource("1_4pvmd")
+region = Rect2(0, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_sqh86"]
+atlas = ExtResource("1_4pvmd")
+region = Rect2(80, 0, 16, 16)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_qhfdt"]
 atlas = ExtResource("1_4pvmd")
@@ -35,6 +47,23 @@ animations = [{
 }, {
 "frames": [{
 "duration": 1.0,
+"texture": SubResource("AtlasTexture_l1au2")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_2fmn4")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_sqh86")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_2fmn4")
+}],
+"loop": true,
+"name": &"run",
+"speed": 6.0
+}, {
+"frames": [{
+"duration": 1.0,
 "texture": SubResource("AtlasTexture_qhfdt")
 }, {
 "duration": 1.0,
@@ -49,9 +78,12 @@ animations = [{
 size = Vector2(10, 13)
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_gnryd"]
-radius = 56.0
+radius = 48.6621
 
-[node name="AIActor" type="CharacterBody2D"]
+[sub_resource type="CircleShape2D" id="CircleShape2D_qqwtr"]
+radius = 16.0
+
+[node name="AIActor" type="CharacterBody2D" groups=["actor"]]
 script = ExtResource("1_hcyw6")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
@@ -59,9 +91,10 @@ z_index = 10
 z_as_relative = false
 texture_filter = 1
 sprite_frames = SubResource("SpriteFrames_yue47")
-animation = &"walk"
+animation = &"run"
 autoplay = "idle"
-frame_progress = 0.27666
+frame = 2
+frame_progress = 0.390513
 
 [node name="DropShadow" type="Sprite2D" parent="."]
 modulate = Color(1, 1, 1, 0.196078)
@@ -84,19 +117,26 @@ one_shot = true
 wait_time = 2.0
 one_shot = true
 
-[node name="DetectionRange" parent="." instance=ExtResource("3_o2fm8")]
+[node name="DetectionActors" parent="." instance=ExtResource("3_o2fm8")]
 
-[node name="CollisionShape2D" parent="DetectionRange" index="0"]
+[node name="CollisionShape2D" parent="DetectionActors" index="0"]
 shape = SubResource("CircleShape2D_gnryd")
 
 [node name="DetectTimer" type="Timer" parent="."]
 wait_time = 3.0
 one_shot = true
 
+[node name="DetectionBounds" parent="." instance=ExtResource("3_o2fm8")]
+
+[node name="CollisionShape2D" parent="DetectionBounds" index="0"]
+shape = SubResource("CircleShape2D_qqwtr")
+
 [connection signal="timeout" from="WanderTimer" to="." method="_on_move_timer_timeout"]
 [connection signal="timeout" from="WaitTimer" to="." method="_on_wait_timer_timeout"]
-[connection signal="body_entered" from="DetectionRange" to="." method="_on_detection_range_body_entered"]
-[connection signal="body_exited" from="DetectionRange" to="." method="_on_detection_range_body_exited"]
+[connection signal="body_entered" from="DetectionActors" to="." method="_on_detection_range_body_entered"]
+[connection signal="body_exited" from="DetectionActors" to="." method="_on_detection_range_body_exited"]
 [connection signal="timeout" from="DetectTimer" to="." method="_on_detect_timer_timeout"]
+[connection signal="body_entered" from="DetectionBounds" to="." method="_on_detection_bounds_body_entered"]
 
-[editable path="DetectionRange"]
+[editable path="DetectionActors"]
+[editable path="DetectionBounds"]
