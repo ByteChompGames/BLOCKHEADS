@@ -6,7 +6,8 @@ enum States
 	WAIT,
 	WANDER,
 	CHASE,
-	FLEE
+	FLEE,
+	INVESTIGATE
 }
 var state = States.WAIT
 
@@ -19,6 +20,7 @@ var state = States.WAIT
 var move_direction : Vector2 = Vector2.ZERO
 var move_speed = 0
 var detect_target = null
+var investigate_position : Vector2 = Vector2.ZERO
 
 @onready var move_timer = $WanderTimer
 @onready var wait_timer = $WaitTimer
@@ -39,8 +41,17 @@ func _physics_process(delta):
 			move_speed = walk_speed
 		States.CHASE:
 			move_speed = run_speed
+			move_direction = get_direction_to_target()
 		States.FLEE:
 			move_speed = run_speed
+		States.INVESTIGATE:
+			move_speed = run_speed
+			var distance_to_investigate_point = global_position.distance_to(investigate_position)
+			if distance_to_investigate_point < 5:
+				detect_target = null
+				wait_timer.start()
+				state = States.WAIT
+				animated_sprite.play("idle")
 	
 	velocity = move_direction * move_speed
 	move_and_slide()
@@ -95,6 +106,8 @@ func _on_detection_range_body_entered(body):
 			if body == detect_target:
 				detect_timer.stop()
 				get_direction_to_target()
+				if state == States.INVESTIGATE:
+					state = on_detect_state
 
 
 func _on_detection_range_body_exited(body):
@@ -102,7 +115,13 @@ func _on_detection_range_body_exited(body):
 		return
 	
 	if body == detect_target:
-		detect_timer.start()
+		if state == States.FLEE:
+			detect_timer.start()
+		if state == States.CHASE:
+			investigate_position = body.global_position
+			var direction = investigate_position - global_position
+			move_direction = direction.normalized()
+			state = States.INVESTIGATE
 
 func _on_detect_timer_timeout():
 	detect_target = null
@@ -114,4 +133,8 @@ func _on_detect_timer_timeout():
 func _on_detection_bounds_body_entered(body):
 	if body.is_in_group("terrain"):
 		var direction = body.global_position - global_position
-		move_direction = -direction.normalized()
+		direction = direction.normalized()
+		if abs(direction.x) > 0.5:
+			move_direction.x *= -1
+		if abs(direction.y) > 0.5:
+			move_direction.y *= -1

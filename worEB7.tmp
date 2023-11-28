@@ -18,12 +18,17 @@ layer_1/tile_data = PackedInt32Array(1703958, 458752, 4, 1703985, 458752, 4, 183
 [node name="AIActor" parent="." instance=ExtResource("1_jtljs")]
 modulate = Color(1, 0.470588, 0.4, 1)
 position = Vector2(626, 339)
+walk_speed = null
 run_speed = 40
+wander_min_max = null
+on_detect_state = null
 detect_state_time = 5
 
 [node name="AIActor2" parent="." instance=ExtResource("1_jtljs")]
 modulate = Color(0.501961, 0.901961, 1, 1)
 position = Vector2(583, 331)
+walk_speed = null
 run_speed = 60
+wander_min_max = null
 on_detect_state = 3
 detect_state_time = 1
