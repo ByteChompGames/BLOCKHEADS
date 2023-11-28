@@ -1,0 +1,102 @@
+[gd_scene load_steps=11 format=3 uid="uid://ciw2tmdy1hnc6"]
+
+[ext_resource type="Texture2D" uid="uid://cgfkce2s0ylyl" path="res://art/CharacterSpriteSheet.png" id="1_4pvmd"]
+[ext_resource type="Script" path="res://ai/ai_actor.gd" id="1_hcyw6"]
+[ext_resource type="PackedScene" uid="uid://gt0junxxlrpj" path="res://ai/components/detection_range.tscn" id="3_o2fm8"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_tbfps"]
+atlas = ExtResource("1_4pvmd")
+region = Rect2(0, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ekxi0"]
+atlas = ExtResource("1_4pvmd")
+region = Rect2(16, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_qhfdt"]
+atlas = ExtResource("1_4pvmd")
+region = Rect2(32, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_300ok"]
+atlas = ExtResource("1_4pvmd")
+region = Rect2(48, 0, 16, 16)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_yue47"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_tbfps")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ekxi0")
+}],
+"loop": true,
+"name": &"idle",
+"speed": 2.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_qhfdt")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_300ok")
+}],
+"loop": true,
+"name": &"walk",
+"speed": 3.0
+}]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_gnndl"]
+size = Vector2(10, 13)
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_gnryd"]
+radius = 56.0
+
+[node name="AIActor" type="CharacterBody2D"]
+script = ExtResource("1_hcyw6")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+z_index = 10
+z_as_relative = false
+texture_filter = 1
+sprite_frames = SubResource("SpriteFrames_yue47")
+animation = &"walk"
+autoplay = "idle"
+frame_progress = 0.27666
+
+[node name="DropShadow" type="Sprite2D" parent="."]
+modulate = Color(1, 1, 1, 0.196078)
+z_index = 5
+z_as_relative = false
+texture_filter = 1
+position = Vector2(0, 7)
+texture = ExtResource("1_4pvmd")
+region_enabled = true
+region_rect = Rect2(82, 27, 12, 4)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, 0.5)
+shape = SubResource("RectangleShape2D_gnndl")
+
+[node name="WanderTimer" type="Timer" parent="."]
+one_shot = true
+
+[node name="WaitTimer" type="Timer" parent="."]
+wait_time = 2.0
+one_shot = true
+
+[node name="DetectionRange" parent="." instance=ExtResource("3_o2fm8")]
+
+[node name="CollisionShape2D" parent="DetectionRange" index="0"]
+shape = SubResource("CircleShape2D_gnryd")
+
+[node name="DetectTimer" type="Timer" parent="."]
+wait_time = 3.0
+one_shot = true
+
+[connection signal="timeout" from="WanderTimer" to="." method="_on_move_timer_timeout"]
+[connection signal="timeout" from="WaitTimer" to="." method="_on_wait_timer_timeout"]
+[connection signal="body_entered" from="DetectionRange" to="." method="_on_detection_range_body_entered"]
+[connection signal="body_exited" from="DetectionRange" to="." method="_on_detection_range_body_exited"]
+[connection signal="timeout" from="DetectTimer" to="." method="_on_detect_timer_timeout"]
+
+[editable path="DetectionRange"]
