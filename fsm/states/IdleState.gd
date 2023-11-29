@@ -24,7 +24,7 @@ func physics_update(_delta : float):
 			actor.stop()
 			wait_timer.start()
 	else:
-		actor.move()
+		actor.move(_delta)
 	
 
 func _on_timer_timeout():

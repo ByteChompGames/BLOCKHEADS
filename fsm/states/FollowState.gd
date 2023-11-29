@@ -28,8 +28,8 @@ func physics_update(_delata : float):
 		actor.animated_sprite.play("idle")
 		actor.stop()
 	else:
-		actor.move()
-		actor.animated_sprite.play("run")
+		actor.move(_delata)
+		actor.animated_sprite.play("walk")
 
 
 func _on_pathing_timer_timeout():

@@ -81,6 +81,8 @@ size = Vector2(10, 12)
 
 [node name="AIActor" type="CharacterBody2D" groups=["actor"]]
 collision_layer = 2
+motion_mode = 1
+wall_min_slide_angle = 0.0
 script = ExtResource("1_hcyw6")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
@@ -108,6 +110,8 @@ shape = SubResource("RectangleShape2D_gnndl")
 [node name="NavigationAgent2D" type="NavigationAgent2D" parent="."]
 path_desired_distance = 24.0
 target_desired_distance = 16.0
+avoidance_enabled = true
+debug_enabled = true
 
 [node name="StateMachine" parent="." node_paths=PackedStringArray("initial_state") instance=ExtResource("4_oapu4")]
 initial_state = NodePath("Idle")
