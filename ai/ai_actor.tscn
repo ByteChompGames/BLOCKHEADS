@@ -1,10 +1,11 @@
-[gd_scene load_steps=15 format=3 uid="uid://ciw2tmdy1hnc6"]
+[gd_scene load_steps=16 format=3 uid="uid://ciw2tmdy1hnc6"]
 
 [ext_resource type="Texture2D" uid="uid://cgfkce2s0ylyl" path="res://art/CharacterSpriteSheet.png" id="1_4pvmd"]
 [ext_resource type="Script" path="res://ai/ai_actor.gd" id="1_hcyw6"]
 [ext_resource type="PackedScene" uid="uid://c5wnijgvhdwmi" path="res://fsm/state_machine.tscn" id="4_oapu4"]
 [ext_resource type="Script" path="res://fsm/states/IdleState.gd" id="5_j1wk4"]
 [ext_resource type="Script" path="res://fsm/states/FollowState.gd" id="5_stoqc"]
+[ext_resource type="Script" path="res://fsm/states/PatrolState.gd" id="6_6c0fl"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_tbfps"]
 atlas = ExtResource("1_4pvmd")
@@ -131,5 +132,14 @@ actor = NodePath("../..")
 [node name="PathingTimer" type="Timer" parent="StateMachine/Follow"]
 wait_time = 0.2
 
+[node name="Patrol" type="Node" parent="StateMachine" node_paths=PackedStringArray("actor")]
+script = ExtResource("6_6c0fl")
+actor = NodePath("../..")
+
+[node name="PatrolTimer" type="Timer" parent="StateMachine/Patrol"]
+wait_time = 2.0
+one_shot = true
+
 [connection signal="timeout" from="StateMachine/Idle/WaitTimer" to="StateMachine/Idle" method="_on_timer_timeout"]
 [connection signal="timeout" from="StateMachine/Follow/PathingTimer" to="StateMachine/Follow" method="_on_pathing_timer_timeout"]
+[connection signal="timeout" from="StateMachine/Patrol/PatrolTimer" to="StateMachine/Patrol" method="_on_patrol_timer_timeout"]

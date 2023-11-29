@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://d25da10isyuuv"]
+
+[ext_resource type="Script" path="res://ai/components/PatrolPath.gd" id="1_l618r"]
+
+[node name="PatrolPath" type="Node2D"]
+script = ExtResource("1_l618r")

@@ -2,6 +2,7 @@ extends CharacterBody2D
 class_name AIActor
 
 @export var follow_target : CharacterBody2D
+@export var patrol_path : PatrolPath
 
 @export var walk_speed = 25
 @export var run_speed = 50
@@ -13,7 +14,6 @@ var move_speed = 0
 @onready var animated_sprite = $AnimatedSprite2D
 
 func _physics_process(delta):
-
 	move_and_slide()
 
 func move(delta : float):
@@ -45,6 +45,13 @@ func set_follow_position():
 		return
 	
 	nav_agent.target_position = follow_target.global_position
+	keep_navigation_path_reachable()
+
+func set_next_patrol_position():
+	if not patrol_path:
+		return
+	
+	nav_agent.target_position = patrol_path.get_next_point()
 	keep_navigation_path_reachable()
 
 func has_reached_destination() -> bool:
