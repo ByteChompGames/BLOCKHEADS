@@ -1,8 +1,9 @@
-[gd_scene load_steps=15 format=3 uid="uid://ciw2tmdy1hnc6"]
+[gd_scene load_steps=14 format=3 uid="uid://ciw2tmdy1hnc6"]
 
 [ext_resource type="Texture2D" uid="uid://cgfkce2s0ylyl" path="res://art/CharacterSpriteSheet.png" id="1_4pvmd"]
 [ext_resource type="Script" path="res://ai/ai_actor.gd" id="1_hcyw6"]
-[ext_resource type="PackedScene" uid="uid://gt0junxxlrpj" path="res://ai/components/detection_range.tscn" id="3_o2fm8"]
+[ext_resource type="PackedScene" uid="uid://c5wnijgvhdwmi" path="res://fsm/state_machine.tscn" id="4_oapu4"]
+[ext_resource type="Script" path="res://fsm/states/IdleState.gd" id="5_j1wk4"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_tbfps"]
 atlas = ExtResource("1_4pvmd")
@@ -75,15 +76,10 @@ animations = [{
 }]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_gnndl"]
-size = Vector2(10, 13)
-
-[sub_resource type="CircleShape2D" id="CircleShape2D_gnryd"]
-radius = 48.6621
-
-[sub_resource type="CircleShape2D" id="CircleShape2D_qqwtr"]
-radius = 16.0
+size = Vector2(10, 12)
 
 [node name="AIActor" type="CharacterBody2D" groups=["actor"]]
+collision_layer = 2
 script = ExtResource("1_hcyw6")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
@@ -91,10 +87,8 @@ z_index = 10
 z_as_relative = false
 texture_filter = 1
 sprite_frames = SubResource("SpriteFrames_yue47")
-animation = &"run"
+animation = &"idle"
 autoplay = "idle"
-frame = 2
-frame_progress = 0.390513
 
 [node name="DropShadow" type="Sprite2D" parent="."]
 modulate = Color(1, 1, 1, 0.196078)
@@ -107,36 +101,25 @@ region_enabled = true
 region_rect = Rect2(82, 27, 12, 4)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-position = Vector2(0, 0.5)
+position = Vector2(0, 1)
 shape = SubResource("RectangleShape2D_gnndl")
 
-[node name="WanderTimer" type="Timer" parent="."]
-one_shot = true
+[node name="NavigationAgent2D" type="NavigationAgent2D" parent="."]
+path_desired_distance = 24.0
+target_desired_distance = 16.0
+debug_enabled = true
 
-[node name="WaitTimer" type="Timer" parent="."]
-wait_time = 2.0
-one_shot = true
+[node name="StateMachine" parent="." node_paths=PackedStringArray("initial_state") instance=ExtResource("4_oapu4")]
+initial_state = NodePath("Idle")
 
-[node name="DetectionActors" parent="." instance=ExtResource("3_o2fm8")]
+[node name="Idle" type="Node" parent="StateMachine" node_paths=PackedStringArray("actor", "nav_agent", "wait_timer")]
+script = ExtResource("5_j1wk4")
+actor = NodePath("../..")
+nav_agent = NodePath("../../NavigationAgent2D")
+wait_timer = NodePath("WaitTimer")
 
-[node name="CollisionShape2D" parent="DetectionActors" index="0"]
-shape = SubResource("CircleShape2D_gnryd")
-
-[node name="DetectTimer" type="Timer" parent="."]
+[node name="WaitTimer" type="Timer" parent="StateMachine/Idle"]
 wait_time = 3.0
 one_shot = true
 
-[node name="DetectionBounds" parent="." instance=ExtResource("3_o2fm8")]
-
-[node name="CollisionShape2D" parent="DetectionBounds" index="0"]
-shape = SubResource("CircleShape2D_qqwtr")
-
-[connection signal="timeout" from="WanderTimer" to="." method="_on_move_timer_timeout"]
-[connection signal="timeout" from="WaitTimer" to="." method="_on_wait_timer_timeout"]
-[connection signal="body_entered" from="DetectionActors" to="." method="_on_detection_range_body_entered"]
-[connection signal="body_exited" from="DetectionActors" to="." method="_on_detection_range_body_exited"]
-[connection signal="timeout" from="DetectTimer" to="." method="_on_detect_timer_timeout"]
-[connection signal="body_entered" from="DetectionBounds" to="." method="_on_detection_bounds_body_entered"]
-
-[editable path="DetectionActors"]
-[editable path="DetectionBounds"]
+[connection signal="timeout" from="StateMachine/Idle/WaitTimer" to="StateMachine/Idle" method="_on_timer_timeout"]
