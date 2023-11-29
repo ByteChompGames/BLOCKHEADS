@@ -2,15 +2,15 @@ extends State
 class_name IdleState
 
 @export var actor : AIActor
-@export var nav_agent : NavigationAgent2D
-@export var wait_timer : Timer
+
+@onready var wait_timer = $WaitTimer
 
 func enter():
 	if actor == null:
 		push_error("actor not assigned to Idle State, exiting state...")
+		return
 	
 	actor.move_speed = actor.walk_speed
-	#actor.set_wander_position()
 	wait_timer.start()
 
 func exit():
@@ -18,10 +18,7 @@ func exit():
 		wait_timer.stop()
 
 func physics_update(_delta : float):
-	
-	
-	
-	if nav_agent.distance_to_target() < nav_agent.target_desired_distance:
+	if actor.has_reached_destination():
 		if wait_timer.is_stopped():
 			actor.animated_sprite.play("idle")
 			actor.stop()
