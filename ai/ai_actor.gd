@@ -14,9 +14,6 @@ var clockwise = true
 @onready var nav_agent = $NavigationAgent2D
 @onready var animated_sprite = $AnimatedSprite2D
 
-func _physics_process(delta):
-	move_and_slide()
-
 # Movement
 func move(delta : float):
 	var direction = to_local(nav_agent.get_next_path_position()).normalized() # set move direction to next point on navigation path
@@ -24,15 +21,23 @@ func move(delta : float):
 	
 	# steer towards the desired direction over time
 	var steering_force = desired_velocity - velocity
-	velocity = velocity + (steering_force * delta)
+	var new_velocity = velocity + (steering_force * delta)
+	
+	if nav_agent.avoidance_enabled:
+		nav_agent.set_velocity(new_velocity)
+	else:
+		_on_navigation_agent_2d_velocity_computed(new_velocity)
 
 func stop():
-	velocity = Vector2.ZERO # reset character velocity
+	if nav_agent.avoidance_enabled:
+		nav_agent.set_velocity(Vector2.ZERO)
+	else:
+		_on_navigation_agent_2d_velocity_computed(Vector2.ZERO)
 
 # Navigation
 func has_reached_destination() -> bool:
 	# return true if target position is closer than the desired distance
-	if nav_agent.distance_to_target() < nav_agent.target_desired_distance:
+	if nav_agent.is_target_reached():
 		return true
 	else:
 		return false
@@ -111,3 +116,8 @@ func get_perpendicular_vector_counter(direction : Vector2) -> Vector2:
 
 func change_flee_direction():
 	clockwise = !clockwise
+
+
+func _on_navigation_agent_2d_velocity_computed(safe_velocity):
+	velocity = safe_velocity
+	move_and_slide()

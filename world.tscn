@@ -32,6 +32,9 @@ follow_target = NodePath("../AIActor_Wanderer")
 walk_speed = 20
 run_speed = 40
 
+[node name="NavigationAgent2D" parent="AIActor_Follower" index="3"]
+avoidance_priority = 0.0
+
 [node name="StateMachine" parent="AIActor_Follower" index="4" node_paths=PackedStringArray("initial_state")]
 initial_state = NodePath("Follow")
 
@@ -57,7 +60,7 @@ position = Vector2(733, 311)
 position = Vector2(31, 118)
 
 [node name="Marker2D3" type="Marker2D" parent="PatrolPath"]
-position = Vector2(-366, 111)
+position = Vector2(-342, 96)
 
 [node name="Marker2D4" type="Marker2D" parent="PatrolPath"]
 position = Vector2(-303, -84)
@@ -69,6 +72,9 @@ position = Vector2(31, -57)
 modulate = Color(0.482353, 1, 0.792157, 1)
 position = Vector2(504, 398)
 follow_target = NodePath("../AIActor_Chase")
+
+[node name="NavigationAgent2D" parent="AIActor_Flee" index="3"]
+avoidance_priority = 0.0
 
 [node name="StateMachine" parent="AIActor_Flee" index="4" node_paths=PackedStringArray("initial_state")]
 initial_state = NodePath("Flee")

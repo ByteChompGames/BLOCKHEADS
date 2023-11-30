@@ -111,7 +111,7 @@ shape = SubResource("RectangleShape2D_gnndl")
 
 [node name="NavigationAgent2D" type="NavigationAgent2D" parent="."]
 path_desired_distance = 24.0
-target_desired_distance = 16.0
+target_desired_distance = 24.0
 avoidance_enabled = true
 debug_enabled = true
 
@@ -151,6 +151,7 @@ wait_time = 0.2
 [node name="SwitchDirectionTimer" type="Timer" parent="StateMachine/Flee"]
 wait_time = 10.0
 
+[connection signal="velocity_computed" from="NavigationAgent2D" to="." method="_on_navigation_agent_2d_velocity_computed"]
 [connection signal="timeout" from="StateMachine/Idle/WaitTimer" to="StateMachine/Idle" method="_on_timer_timeout"]
 [connection signal="timeout" from="StateMachine/Follow/PathingTimer" to="StateMachine/Follow" method="_on_pathing_timer_timeout"]
 [connection signal="timeout" from="StateMachine/Patrol/PatrolTimer" to="StateMachine/Patrol" method="_on_patrol_timer_timeout"]
