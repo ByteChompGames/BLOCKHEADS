@@ -16,20 +16,18 @@ func enter():
 		pathing_timer.start()
 	else:
 		push_error("actor has no target to follow, exiting Follow State...")
-	
-	actor.move_speed = actor.walk_speed
 
 func exit():
 	if not pathing_timer.is_stopped():
 		pathing_timer.stop()
 
-func physics_update(_delata : float):
+func physics_update(_delta : float):
 	if actor.has_reached_destination():
 		actor.animated_sprite.play("idle")
 		actor.stop()
 	else:
-		actor.move(_delata)
-		actor.animated_sprite.play("walk")
+		actor.set_follow_speed()
+		actor.move(_delta)
 
 
 func _on_pathing_timer_timeout():

@@ -1,4 +1,4 @@
-[gd_scene load_steps=16 format=3 uid="uid://ciw2tmdy1hnc6"]
+[gd_scene load_steps=17 format=3 uid="uid://ciw2tmdy1hnc6"]
 
 [ext_resource type="Texture2D" uid="uid://cgfkce2s0ylyl" path="res://art/CharacterSpriteSheet.png" id="1_4pvmd"]
 [ext_resource type="Script" path="res://ai/ai_actor.gd" id="1_hcyw6"]
@@ -6,6 +6,7 @@
 [ext_resource type="Script" path="res://fsm/states/IdleState.gd" id="5_j1wk4"]
 [ext_resource type="Script" path="res://fsm/states/FollowState.gd" id="5_stoqc"]
 [ext_resource type="Script" path="res://fsm/states/PatrolState.gd" id="6_6c0fl"]
+[ext_resource type="Script" path="res://fsm/states/FleeState.gd" id="7_q4rp0"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_tbfps"]
 atlas = ExtResource("1_4pvmd")
@@ -140,6 +141,18 @@ actor = NodePath("../..")
 wait_time = 2.0
 one_shot = true
 
+[node name="Flee" type="Node" parent="StateMachine" node_paths=PackedStringArray("actor")]
+script = ExtResource("7_q4rp0")
+actor = NodePath("../..")
+
+[node name="FleeTimer" type="Timer" parent="StateMachine/Flee"]
+wait_time = 0.2
+
+[node name="SwitchDirectionTimer" type="Timer" parent="StateMachine/Flee"]
+wait_time = 10.0
+
 [connection signal="timeout" from="StateMachine/Idle/WaitTimer" to="StateMachine/Idle" method="_on_timer_timeout"]
 [connection signal="timeout" from="StateMachine/Follow/PathingTimer" to="StateMachine/Follow" method="_on_pathing_timer_timeout"]
 [connection signal="timeout" from="StateMachine/Patrol/PatrolTimer" to="StateMachine/Patrol" method="_on_patrol_timer_timeout"]
+[connection signal="timeout" from="StateMachine/Flee/FleeTimer" to="StateMachine/Flee" method="_on_flee_timer_timeout"]
+[connection signal="timeout" from="StateMachine/Flee/SwitchDirectionTimer" to="StateMachine/Flee" method="_on_switch_direction_timer_timeout"]
