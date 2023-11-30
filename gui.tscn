@@ -1,0 +1,28 @@
+[gd_scene load_steps=2 format=3 uid="uid://cmghb5wkow0qs"]
+
+[ext_resource type="Texture2D" uid="uid://b6foag7py1rbp" path="res://art/BLOCKHEADS_Logo.png" id="1_35kn2"]
+
+[node name="GUI" type="Control"]
+texture_filter = 1
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="TextureRect" type="TextureRect" parent="."]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -125.0
+offset_top = -22.0
+offset_right = 37.0
+offset_bottom = 2.0
+grow_horizontal = 0
+grow_vertical = 0
+scale = Vector2(0.75, 0.75)
+texture = ExtResource("1_35kn2")

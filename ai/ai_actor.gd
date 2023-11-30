@@ -14,6 +14,17 @@ var clockwise = true
 @onready var nav_agent = $NavigationAgent2D
 @onready var animated_sprite = $AnimatedSprite2D
 
+func _physics_process(delta):
+	set_animation_based_on_velocity()
+
+func set_animation_based_on_velocity():
+	if move_speed < walk_speed:
+		animated_sprite.play("idle")
+	elif move_speed >= walk_speed and move_speed < run_speed:
+		animated_sprite.play("walk")
+	else:
+		animated_sprite.play("run")
+
 # Movement
 func move(delta : float):
 	var direction = to_local(nav_agent.get_next_path_position()).normalized() # set move direction to next point on navigation path
@@ -29,6 +40,7 @@ func move(delta : float):
 		_on_navigation_agent_2d_velocity_computed(new_velocity)
 
 func stop():
+	move_speed = 0
 	if nav_agent.avoidance_enabled:
 		nav_agent.set_velocity(Vector2.ZERO)
 	else:
@@ -52,6 +64,7 @@ func set_wander_position():
 	var x = randf_range(-wander_radius, wander_radius)
 	var y = randf_range(-wander_radius, wander_radius)
 	
+	move_speed = walk_speed
 	nav_agent.target_position = global_position + Vector2(x, y) # set position to random point from current position
 	
 	keep_navigation_path_reachable()
@@ -73,15 +86,15 @@ func set_follow_speed():
 	
 	if nav_agent.distance_to_target() > run_distance:
 		move_speed = run_speed
-		animated_sprite.play("run")
 	else:
 		move_speed = walk_speed
-		animated_sprite.play("walk")
 
 # Patrolling
 func set_next_patrol_position():
 	if not patrol_path: # cannot set a patrol position if no path provided
 		return
+	
+	move_speed = walk_speed
 	
 	# set target position to the next point in the path
 	nav_agent.target_position = patrol_path.get_next_point()
@@ -101,6 +114,8 @@ func set_flee_position():
 		perp_direction = get_perpendicular_vector_clockwise(target_direction)
 	else:
 		perp_direction = get_perpendicular_vector_counter(target_direction)
+	
+	move_speed = run_speed
 	
 	# set target direction to perpendiculat direction
 	nav_agent.target_position = global_position + (perp_direction * (move_speed + nav_agent.target_desired_distance))

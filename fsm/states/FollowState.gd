@@ -23,7 +23,6 @@ func exit():
 
 func physics_update(_delta : float):
 	if actor.has_reached_destination():
-		actor.animated_sprite.play("idle")
 		actor.stop()
 	else:
 		actor.set_follow_speed()

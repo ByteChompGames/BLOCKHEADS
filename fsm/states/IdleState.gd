@@ -10,7 +10,6 @@ func enter():
 		push_error("actor not assigned to Idle State, exiting state...")
 		return
 	
-	actor.move_speed = actor.walk_speed
 	wait_timer.start()
 
 func exit():
@@ -20,7 +19,6 @@ func exit():
 func physics_update(_delta : float):
 	if actor.has_reached_destination():
 		if wait_timer.is_stopped():
-			actor.animated_sprite.play("idle")
 			actor.stop()
 			wait_timer.start()
 	else:
@@ -29,4 +27,3 @@ func physics_update(_delta : float):
 
 func _on_timer_timeout():
 	actor.set_wander_position()
-	actor.animated_sprite.play("walk")
