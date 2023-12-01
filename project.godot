@@ -10,11 +10,17 @@ config_version=5
 
 [application]
 
-config/name="Gd Ai"
+config/name="BLOCKHEADS"
+config/description="Exploration to create an in-depth AI system for game development."
 run/main_scene="res://world.tscn"
 config/features=PackedStringArray("4.1", "Forward Plus")
+boot_splash/show_image=false
 config/icon="res://icon.svg"
 
 [dotnet]
 
 project/assembly_name="Gd Ai"
+
+[rendering]
+
+renderer/rendering_method="gl_compatibility"
