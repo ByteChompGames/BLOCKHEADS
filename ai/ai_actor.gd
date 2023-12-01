@@ -9,10 +9,17 @@ class_name AIActor
 @export var wander_radius = 50
 
 var move_speed = 0
+
+var directions : Array = [
+	Vector2(0,-1), Vector2(1,-1), Vector2(1, 0), 
+	Vector2(1, -1), Vector2(0,1), Vector2(-1, 1), 
+	Vector2(-1, 0), Vector2(-1, -1)]
+var interests = [0,0,0,0,0,0,0,0]
 var clockwise = true
 
 @onready var nav_agent = $NavigationAgent2D
 @onready var animated_sprite = $AnimatedSprite2D
+@onready var avoidance_map := $AvoidanceMap
 
 func _physics_process(delta):
 	set_animation_based_on_velocity()
@@ -26,18 +33,43 @@ func set_animation_based_on_velocity():
 		animated_sprite.play("run")
 
 # Movement
+
+func set_interests(desired_direction : Vector2):
+	for i in interests.size():
+		var dot = desired_direction.dot(directions[i])
+		interests[i] = dot
+
+func get_context_direction() -> Vector2:
+	var selected : int = 0
+	var dangers = avoidance_map.dangers
+	var value_to_beat = 0
+	
+	for i in interests.size():
+		var value = interests[i] - dangers[i]
+		if i == 0:
+			value_to_beat = value
+			selected = i
+		else:
+			if value > value_to_beat:
+				value_to_beat = value
+				selected = i
+	return directions[selected]
+
 func move(delta : float):
 	var direction = to_local(nav_agent.get_next_path_position()).normalized() # set move direction to next point on navigation path
-	var desired_velocity = direction * move_speed # set character velocity to move in direction at move speed
+	set_interests(direction)
+	
+	var desired_velocity = get_context_direction() * move_speed # desired velocity in the best direction given the current context
 	
 	# steer towards the desired direction over time
 	var steering_force = desired_velocity - velocity
-	var new_velocity = velocity + (steering_force * delta)
+	steering_force = steering_force * 2
+	velocity = velocity + (steering_force * delta)
 	
 	if nav_agent.avoidance_enabled:
-		nav_agent.set_velocity(new_velocity)
+		nav_agent.set_velocity(velocity)
 	else:
-		_on_navigation_agent_2d_velocity_computed(new_velocity)
+		_on_navigation_agent_2d_velocity_computed(velocity)
 
 func stop():
 	move_speed = 0

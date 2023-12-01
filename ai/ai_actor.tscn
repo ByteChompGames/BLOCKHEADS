@@ -1,7 +1,8 @@
-[gd_scene load_steps=17 format=3 uid="uid://ciw2tmdy1hnc6"]
+[gd_scene load_steps=18 format=3 uid="uid://ciw2tmdy1hnc6"]
 
 [ext_resource type="Texture2D" uid="uid://cgfkce2s0ylyl" path="res://art/CharacterSpriteSheet.png" id="1_4pvmd"]
 [ext_resource type="Script" path="res://ai/ai_actor.gd" id="1_hcyw6"]
+[ext_resource type="PackedScene" uid="uid://bela8ivbqbepi" path="res://ai/components/avoidance_map.tscn" id="3_8fgeq"]
 [ext_resource type="PackedScene" uid="uid://c5wnijgvhdwmi" path="res://fsm/state_machine.tscn" id="4_oapu4"]
 [ext_resource type="Script" path="res://fsm/states/IdleState.gd" id="5_j1wk4"]
 [ext_resource type="Script" path="res://fsm/states/FollowState.gd" id="5_stoqc"]
@@ -113,6 +114,9 @@ shape = SubResource("RectangleShape2D_gnndl")
 path_desired_distance = 24.0
 target_desired_distance = 24.0
 avoidance_enabled = true
+
+[node name="AvoidanceMap" parent="." instance=ExtResource("3_8fgeq")]
+tick_rate = 0.2
 
 [node name="StateMachine" parent="." node_paths=PackedStringArray("initial_state") instance=ExtResource("4_oapu4")]
 initial_state = NodePath("Idle")

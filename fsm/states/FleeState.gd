@@ -11,7 +11,7 @@ func enter():
 		push_error("actor not assigned to Flee State.")
 	
 	flee_timer.start()
-	#switch_direction_timer.start()
+	switch_direction_timer.start()
 
 func exit():
 	if not flee_timer.is_stopped():
