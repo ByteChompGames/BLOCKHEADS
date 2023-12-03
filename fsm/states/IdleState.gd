@@ -3,6 +3,8 @@ class_name IdleState
 
 @export var actor : AIActor
 
+@export var on_detect_transition_state : State
+
 @onready var wait_timer = $WaitTimer
 
 func enter():
@@ -27,3 +29,8 @@ func physics_update(_delta : float):
 
 func _on_timer_timeout():
 	actor.set_wander_position()
+
+func on_detect_enter_transition(_detected_body):
+	print("here")
+	actor.follow_target = _detected_body
+	Transitioned.emit(self, on_detect_transition_state.name.to_lower())

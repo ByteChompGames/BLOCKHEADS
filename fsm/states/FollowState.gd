@@ -3,6 +3,8 @@ class_name FollowState
 
 @export var actor : AIActor
 
+@export var on_detect_lost_transition_state : State
+
 var follow_target : CharacterBody2D
 
 @onready var pathing_timer = $PathingTimer
@@ -28,6 +30,10 @@ func physics_update(_delta : float):
 		actor.set_follow_speed()
 		actor.move(_delta)
 
+func on_detect_exit_transition(_detected_body):
+	print("Follow Target lost, returning to Idle")
+	actor.follow_target = null
+	Transitioned.emit(self, on_detect_lost_transition_state.name.to_lower())
 
 func _on_pathing_timer_timeout():
 	actor.set_follow_position()

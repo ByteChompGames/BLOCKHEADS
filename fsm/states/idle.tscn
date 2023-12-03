@@ -1,0 +1,13 @@
+[gd_scene load_steps=2 format=3 uid="uid://bvopfcgs6fsb2"]
+
+[ext_resource type="Script" path="res://fsm/states/IdleState.gd" id="1_gxatd"]
+
+[node name="Idle" type="Node" node_paths=PackedStringArray("actor")]
+script = ExtResource("1_gxatd")
+actor = NodePath("")
+
+[node name="WaitTimer" type="Timer" parent="."]
+wait_time = 3.0
+one_shot = true
+
+[connection signal="timeout" from="WaitTimer" to="." method="_on_timer_timeout"]

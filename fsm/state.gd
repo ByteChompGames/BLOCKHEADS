@@ -14,3 +14,11 @@ func update(_delta : float):
 
 func physics_update(_delata : float):
 	pass
+
+# Transitions
+
+func on_detect_enter_transition(_detected_body):
+	pass
+
+func on_detect_exit_transition(_detected_body):
+	pass

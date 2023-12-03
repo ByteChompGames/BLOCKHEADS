@@ -1,7 +1,7 @@
 extends CharacterBody2D
 class_name AIActor
 
-@export var follow_target : CharacterBody2D
+@export var follow_target : AIActor
 @export var patrol_path : PatrolPath
 
 @export var walk_speed = 25
@@ -34,26 +34,28 @@ func set_animation_based_on_velocity():
 
 # Movement
 
+# returns an array of dot products that determines which of the directions in the array are closest to the desired direction
 func set_interests(desired_direction : Vector2):
 	for i in interests.size():
-		var dot = desired_direction.dot(directions[i])
-		interests[i] = dot
+		var dot = desired_direction.dot(directions[i]) # get the dot product of the each direction in the array against the desired direction
+		interests[i] = dot # set interest of that direction to the dot product
 
+# returns the direction from the array the is closets to the current interest while avoiding the current dangers
 func get_context_direction() -> Vector2:
 	var selected : int = 0
-	var dangers = avoidance_map.dangers
+	var dangers = avoidance_map.dangers # get dangers from avoidance map
 	var value_to_beat = 0
 	
-	for i in interests.size():
-		var value = interests[i] - dangers[i]
-		if i == 0:
+	for i in interests.size(): # go through each interest
+		var value = interests[i] - dangers[i] #subtract the corresponding danger from it
+		if i == 0: # set first value as value to beat
 			value_to_beat = value
 			selected = i
-		else:
+		else: # otherwise check if any other value in the array is higher
 			if value > value_to_beat:
 				value_to_beat = value
 				selected = i
-	return directions[selected]
+	return directions[selected] # return the direction that corresponds to the highest selected value
 
 func move(delta : float):
 	
@@ -165,7 +167,7 @@ func get_perpendicular_vector_counter(direction : Vector2) -> Vector2:
 func change_flee_direction():
 	clockwise = !clockwise
 
-
+# NavigationAgent2D Signals
 func _on_navigation_agent_2d_velocity_computed(safe_velocity):
 	velocity = safe_velocity
 	move_and_slide()

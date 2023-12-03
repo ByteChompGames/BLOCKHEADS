@@ -37,3 +37,20 @@ func on_child_transitioned(state, new_state_name):
 	new_state.enter()
 	current_state = new_state
 	
+	print(current_state.name)
+
+
+func _on_detection_range_body_entered(body):
+	if body == current_state.actor:
+		return
+	
+	if body.is_in_group("actor"):
+		current_state.on_detect_enter_transition(body)
+
+
+func _on_detection_range_body_exited(body):
+	if body == current_state.actor:
+		return
+	
+	if body.is_in_group("actor"):
+		current_state.on_detect_exit_transition(body)

@@ -1,0 +1,13 @@
+[gd_scene load_steps=2 format=3 uid="uid://dkt5fmgjt38ag"]
+
+[ext_resource type="Script" path="res://fsm/states/PatrolState.gd" id="1_crl8a"]
+
+[node name="Patrol" type="Node" node_paths=PackedStringArray("actor")]
+script = ExtResource("1_crl8a")
+actor = NodePath("")
+
+[node name="PatrolTimer" type="Timer" parent="."]
+wait_time = 2.0
+one_shot = true
+
+[connection signal="timeout" from="PatrolTimer" to="." method="_on_patrol_timer_timeout"]

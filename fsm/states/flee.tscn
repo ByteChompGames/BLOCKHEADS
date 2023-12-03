@@ -1,0 +1,15 @@
+[gd_scene load_steps=2 format=3 uid="uid://drinc02y11xps"]
+
+[ext_resource type="Script" path="res://fsm/states/FleeState.gd" id="1_5bje8"]
+
+[node name="Flee" type="Node" node_paths=PackedStringArray("actor")]
+script = ExtResource("1_5bje8")
+actor = NodePath("")
+
+[node name="FleeTimer" type="Timer" parent="."]
+wait_time = 0.2
+
+[node name="SwitchDirectionTimer" type="Timer" parent="."]
+
+[connection signal="timeout" from="FleeTimer" to="." method="_on_flee_timer_timeout"]
+[connection signal="timeout" from="SwitchDirectionTimer" to="." method="_on_switch_direction_timer_timeout"]

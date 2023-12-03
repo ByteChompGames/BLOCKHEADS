@@ -1,41 +1,39 @@
-[gd_scene load_steps=20 format=3 uid="uid://ciw2tmdy1hnc6"]
+[gd_scene load_steps=17 format=3 uid="uid://cc0bjkiwauiae"]
 
-[ext_resource type="Texture2D" uid="uid://cgfkce2s0ylyl" path="res://art/CharacterSpriteSheet.png" id="1_4pvmd"]
-[ext_resource type="Script" path="res://ai/ai_actor.gd" id="1_hcyw6"]
-[ext_resource type="PackedScene" uid="uid://bela8ivbqbepi" path="res://ai/components/avoidance_map.tscn" id="3_8fgeq"]
-[ext_resource type="PackedScene" uid="uid://c5wnijgvhdwmi" path="res://fsm/state_machine.tscn" id="4_oapu4"]
-[ext_resource type="PackedScene" uid="uid://bvopfcgs6fsb2" path="res://fsm/states/idle.tscn" id="5_bryg5"]
-[ext_resource type="PackedScene" uid="uid://cdkexnalcke6j" path="res://fsm/states/follow.tscn" id="6_aeawx"]
-[ext_resource type="PackedScene" uid="uid://dkt5fmgjt38ag" path="res://fsm/states/patrol.tscn" id="7_7dbar"]
-[ext_resource type="PackedScene" uid="uid://drinc02y11xps" path="res://fsm/states/flee.tscn" id="8_cjekq"]
-[ext_resource type="PackedScene" uid="uid://gt0junxxlrpj" path="res://ai/components/detection_range.tscn" id="9_17brq"]
+[ext_resource type="Script" path="res://ai/ai_actor.gd" id="1_psd5p"]
+[ext_resource type="Texture2D" uid="uid://cgfkce2s0ylyl" path="res://art/CharacterSpriteSheet.png" id="2_jrh86"]
+[ext_resource type="PackedScene" uid="uid://bela8ivbqbepi" path="res://ai/components/avoidance_map.tscn" id="3_qk8i3"]
+[ext_resource type="PackedScene" uid="uid://c5wnijgvhdwmi" path="res://fsm/state_machine.tscn" id="4_gyd7r"]
+[ext_resource type="PackedScene" uid="uid://cdkexnalcke6j" path="res://fsm/states/follow.tscn" id="6_ldehr"]
+[ext_resource type="PackedScene" uid="uid://dkt5fmgjt38ag" path="res://fsm/states/patrol.tscn" id="7_dd3bi"]
+[ext_resource type="PackedScene" uid="uid://drinc02y11xps" path="res://fsm/states/flee.tscn" id="8_0v6p4"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_tbfps"]
-atlas = ExtResource("1_4pvmd")
+atlas = ExtResource("2_jrh86")
 region = Rect2(0, 0, 16, 16)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_ekxi0"]
-atlas = ExtResource("1_4pvmd")
+atlas = ExtResource("2_jrh86")
 region = Rect2(16, 0, 16, 16)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_l1au2"]
-atlas = ExtResource("1_4pvmd")
+atlas = ExtResource("2_jrh86")
 region = Rect2(64, 0, 16, 16)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_2fmn4"]
-atlas = ExtResource("1_4pvmd")
+atlas = ExtResource("2_jrh86")
 region = Rect2(0, 0, 16, 16)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_sqh86"]
-atlas = ExtResource("1_4pvmd")
+atlas = ExtResource("2_jrh86")
 region = Rect2(80, 0, 16, 16)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_qhfdt"]
-atlas = ExtResource("1_4pvmd")
+atlas = ExtResource("2_jrh86")
 region = Rect2(32, 0, 16, 16)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_300ok"]
-atlas = ExtResource("1_4pvmd")
+atlas = ExtResource("2_jrh86")
 region = Rect2(48, 0, 16, 16)
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_yue47"]
@@ -83,14 +81,12 @@ animations = [{
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_gnndl"]
 size = Vector2(10, 12)
 
-[sub_resource type="CircleShape2D" id="CircleShape2D_yemqb"]
-radius = 48.0
-
-[node name="AIActor" type="CharacterBody2D" groups=["actor"]]
+[node name="AI_Patroller" type="CharacterBody2D" groups=["actor"]]
+modulate = Color(0.741176, 0.431373, 1, 1)
 collision_layer = 2
 motion_mode = 1
 wall_min_slide_angle = 0.0
-script = ExtResource("1_hcyw6")
+script = ExtResource("1_psd5p")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 z_index = 10
@@ -106,7 +102,7 @@ z_index = 5
 z_as_relative = false
 texture_filter = 1
 position = Vector2(0, 7)
-texture = ExtResource("1_4pvmd")
+texture = ExtResource("2_jrh86")
 region_enabled = true
 region_rect = Rect2(82, 27, 12, 4)
 
@@ -119,25 +115,19 @@ path_desired_distance = 24.0
 target_desired_distance = 24.0
 avoidance_enabled = true
 
-[node name="StateMachine" parent="." node_paths=PackedStringArray("initial_state") instance=ExtResource("4_oapu4")]
-initial_state = NodePath("Idle")
-
-[node name="Idle" parent="StateMachine" instance=ExtResource("5_bryg5")]
-
-[node name="Follow" parent="StateMachine" instance=ExtResource("6_aeawx")]
-
-[node name="Patrol" parent="StateMachine" instance=ExtResource("7_7dbar")]
-
-[node name="Flee" parent="StateMachine" instance=ExtResource("8_cjekq")]
-
-[node name="AvoidanceMap" parent="." instance=ExtResource("3_8fgeq")]
+[node name="AvoidanceMap" parent="." instance=ExtResource("3_qk8i3")]
 tick_rate = 0.2
 
-[node name="DetectionRange" parent="." instance=ExtResource("9_17brq")]
+[node name="StateMachine" parent="." node_paths=PackedStringArray("initial_state") instance=ExtResource("4_gyd7r")]
+initial_state = NodePath("Patrol")
 
-[node name="CollisionShape2D" parent="DetectionRange" index="0"]
-shape = SubResource("CircleShape2D_yemqb")
+[node name="Patrol" parent="StateMachine" node_paths=PackedStringArray("actor") instance=ExtResource("7_dd3bi")]
+actor = NodePath("../..")
 
-[connection signal="velocity_computed" from="NavigationAgent2D" to="." method="_on_navigation_agent_2d_velocity_computed"]
+[node name="Follow" parent="StateMachine" node_paths=PackedStringArray("actor") instance=ExtResource("6_ldehr")]
+actor = NodePath("../..")
 
-[editable path="DetectionRange"]
+[node name="Flee" parent="StateMachine" node_paths=PackedStringArray("actor") instance=ExtResource("8_0v6p4")]
+actor = NodePath("../..")
+
+[connection signal="velocity_computed" from="NavigationAgent2D" to="." method="_on_navigation_agent_2d_velocity_computed" flags=18]
