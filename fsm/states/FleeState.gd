@@ -3,6 +3,8 @@ class_name FleeState
 
 @export var actor : AIActor
 
+@export var on_detect_lost_transition_state : State
+
 @onready var flee_timer = $FleeTimer
 @onready var switch_direction_timer = $SwitchDirectionTimer
 
@@ -19,6 +21,10 @@ func exit():
 
 func physics_update(_delta : float):
 	actor.move(_delta)
+
+func on_detect_exit_transition(_detected_body):
+	actor.follow_target = null
+	Transitioned.emit(self, on_detect_lost_transition_state.name.to_lower())
 
 func _on_flee_timer_timeout():
 	actor.set_flee_position()

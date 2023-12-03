@@ -1,4 +1,4 @@
-[gd_scene load_steps=17 format=3 uid="uid://cc0bjkiwauiae"]
+[gd_scene load_steps=19 format=3 uid="uid://cc0bjkiwauiae"]
 
 [ext_resource type="Script" path="res://ai/ai_actor.gd" id="1_psd5p"]
 [ext_resource type="Texture2D" uid="uid://cgfkce2s0ylyl" path="res://art/CharacterSpriteSheet.png" id="2_jrh86"]
@@ -7,6 +7,7 @@
 [ext_resource type="PackedScene" uid="uid://cdkexnalcke6j" path="res://fsm/states/follow.tscn" id="6_ldehr"]
 [ext_resource type="PackedScene" uid="uid://dkt5fmgjt38ag" path="res://fsm/states/patrol.tscn" id="7_dd3bi"]
 [ext_resource type="PackedScene" uid="uid://drinc02y11xps" path="res://fsm/states/flee.tscn" id="8_0v6p4"]
+[ext_resource type="PackedScene" uid="uid://gt0junxxlrpj" path="res://ai/components/detection_range.tscn" id="8_1ivpa"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_tbfps"]
 atlas = ExtResource("2_jrh86")
@@ -81,6 +82,9 @@ animations = [{
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_gnndl"]
 size = Vector2(10, 12)
 
+[sub_resource type="CircleShape2D" id="CircleShape2D_nocqy"]
+radius = 48.0
+
 [node name="AI_Patroller" type="CharacterBody2D" groups=["actor"]]
 modulate = Color(0.741176, 0.431373, 1, 1)
 collision_layer = 2
@@ -114,6 +118,7 @@ shape = SubResource("RectangleShape2D_gnndl")
 path_desired_distance = 24.0
 target_desired_distance = 24.0
 avoidance_enabled = true
+debug_enabled = true
 
 [node name="AvoidanceMap" parent="." instance=ExtResource("3_qk8i3")]
 tick_rate = 0.2
@@ -121,13 +126,28 @@ tick_rate = 0.2
 [node name="StateMachine" parent="." node_paths=PackedStringArray("initial_state") instance=ExtResource("4_gyd7r")]
 initial_state = NodePath("Patrol")
 
-[node name="Patrol" parent="StateMachine" node_paths=PackedStringArray("actor") instance=ExtResource("7_dd3bi")]
+[node name="Patrol" parent="StateMachine" node_paths=PackedStringArray("actor", "lower_id_detect_transition", "higher_id_detect_transition") instance=ExtResource("7_dd3bi")]
 actor = NodePath("../..")
+lower_id_detect_transition = NodePath("../Follow")
+higher_id_detect_transition = NodePath("../Flee")
 
-[node name="Follow" parent="StateMachine" node_paths=PackedStringArray("actor") instance=ExtResource("6_ldehr")]
+[node name="Follow" parent="StateMachine" node_paths=PackedStringArray("actor", "on_detect_lost_transition_state") instance=ExtResource("6_ldehr")]
 actor = NodePath("../..")
+on_detect_lost_transition_state = NodePath("../Patrol")
 
-[node name="Flee" parent="StateMachine" node_paths=PackedStringArray("actor") instance=ExtResource("8_0v6p4")]
+[node name="Flee" parent="StateMachine" node_paths=PackedStringArray("actor", "on_detect_lost_transition_state") instance=ExtResource("8_0v6p4")]
 actor = NodePath("../..")
+on_detect_lost_transition_state = NodePath("../Patrol")
+
+[node name="DetectionRange" parent="." instance=ExtResource("8_1ivpa")]
+collision_layer = 2
+collision_mask = 2
+
+[node name="CollisionShape2D" parent="DetectionRange" index="0"]
+shape = SubResource("CircleShape2D_nocqy")
 
 [connection signal="velocity_computed" from="NavigationAgent2D" to="." method="_on_navigation_agent_2d_velocity_computed" flags=18]
+[connection signal="body_entered" from="DetectionRange" to="StateMachine" method="_on_detection_range_body_entered"]
+[connection signal="body_exited" from="DetectionRange" to="StateMachine" method="_on_detection_range_body_exited"]
+
+[editable path="DetectionRange"]

@@ -123,16 +123,18 @@ debug_enabled = true
 [node name="StateMachine" parent="." node_paths=PackedStringArray("initial_state") instance=ExtResource("4_8n7t3")]
 initial_state = NodePath("Idle")
 
-[node name="Idle" parent="StateMachine" node_paths=PackedStringArray("actor", "on_detect_transition_state") instance=ExtResource("5_4pao6")]
+[node name="Idle" parent="StateMachine" node_paths=PackedStringArray("actor", "lower_id_detect_transition", "higher_id_detect_transition") instance=ExtResource("5_4pao6")]
 actor = NodePath("../..")
-on_detect_transition_state = NodePath("../Follow")
+lower_id_detect_transition = NodePath("../Follow")
+higher_id_detect_transition = NodePath("../Flee")
 
 [node name="Follow" parent="StateMachine" node_paths=PackedStringArray("actor", "on_detect_lost_transition_state") instance=ExtResource("6_7fol0")]
 actor = NodePath("../..")
 on_detect_lost_transition_state = NodePath("../Idle")
 
-[node name="Flee" parent="StateMachine" node_paths=PackedStringArray("actor") instance=ExtResource("8_xv6m3")]
+[node name="Flee" parent="StateMachine" node_paths=PackedStringArray("actor", "on_detect_lost_transition_state") instance=ExtResource("8_xv6m3")]
 actor = NodePath("../..")
+on_detect_lost_transition_state = NodePath("../Idle")
 
 [node name="AvoidanceMap" parent="." instance=ExtResource("3_184mb")]
 tick_rate = 0.2

@@ -3,12 +3,15 @@ class_name AIActor
 
 @export var follow_target : AIActor
 @export var patrol_path : PatrolPath
+@export var AI_ID = 0
 
 @export var walk_speed = 25
 @export var run_speed = 50
 @export var wander_radius = 50
 
 var move_speed = 0
+
+var pause_point : Vector2
 
 var directions : Array = [
 	Vector2(0,-1), Vector2(1,-1), Vector2(1, 0), 
@@ -104,6 +107,16 @@ func set_wander_position():
 	
 	keep_navigation_path_reachable()
 
+func set_run_position():
+	# get a random x and y value withing wander radius
+	var x = randf_range(-wander_radius, wander_radius)
+	var y = randf_range(-wander_radius, wander_radius)
+	
+	move_speed = run_speed
+	nav_agent.target_position = global_position + Vector2(x, y) # set position to random point from current position
+	
+	keep_navigation_path_reachable()
+
 # Following
 func set_follow_position():
 	if not follow_target: # cannot set follow position if no target available
@@ -133,6 +146,16 @@ func set_next_patrol_position():
 	
 	# set target position to the next point in the path
 	nav_agent.target_position = patrol_path.get_next_point()
+	keep_navigation_path_reachable()
+
+func pause_patrol():
+	pause_point = nav_agent.target_position
+
+func resume_patrol():
+	move_speed = walk_speed
+	
+	# set target position to the next point in the path
+	nav_agent.target_position = pause_point
 	keep_navigation_path_reachable()
 
 #Flee

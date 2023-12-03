@@ -31,7 +31,6 @@ func physics_update(_delta : float):
 		actor.move(_delta)
 
 func on_detect_exit_transition(_detected_body):
-	print("Follow Target lost, returning to Idle")
 	actor.follow_target = null
 	Transitioned.emit(self, on_detect_lost_transition_state.name.to_lower())
 
