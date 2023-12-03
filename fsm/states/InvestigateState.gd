@@ -15,6 +15,8 @@ func enter():
 		push_error("actor not assigned to Investigate State.")
 	
 	on_target_found_transition = actor.target_detect_state
+	if on_target_found_transition == FleeState:
+		actor.last_known_direction *= -1
 	search_timer.start()
 	actor.get_invesitgate_position()
 
