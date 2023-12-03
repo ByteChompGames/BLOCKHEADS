@@ -1,4 +1,4 @@
-[gd_scene load_steps=20 format=3 uid="uid://ciw2tmdy1hnc6"]
+[gd_scene load_steps=21 format=3 uid="uid://ciw2tmdy1hnc6"]
 
 [ext_resource type="Texture2D" uid="uid://cgfkce2s0ylyl" path="res://art/CharacterSpriteSheet.png" id="1_4pvmd"]
 [ext_resource type="Script" path="res://ai/ai_actor.gd" id="1_hcyw6"]
@@ -7,6 +7,7 @@
 [ext_resource type="PackedScene" uid="uid://bvopfcgs6fsb2" path="res://fsm/states/idle.tscn" id="5_bryg5"]
 [ext_resource type="PackedScene" uid="uid://cdkexnalcke6j" path="res://fsm/states/follow.tscn" id="6_aeawx"]
 [ext_resource type="PackedScene" uid="uid://dkt5fmgjt38ag" path="res://fsm/states/patrol.tscn" id="7_7dbar"]
+[ext_resource type="PackedScene" uid="uid://d4a1bvvirc1kb" path="res://fsm/states/investigate.tscn" id="8_7f1rg"]
 [ext_resource type="PackedScene" uid="uid://drinc02y11xps" path="res://fsm/states/flee.tscn" id="8_cjekq"]
 [ext_resource type="PackedScene" uid="uid://gt0junxxlrpj" path="res://ai/components/detection_range.tscn" id="9_17brq"]
 
@@ -129,6 +130,8 @@ initial_state = NodePath("Idle")
 [node name="Patrol" parent="StateMachine" instance=ExtResource("7_7dbar")]
 
 [node name="Flee" parent="StateMachine" instance=ExtResource("8_cjekq")]
+
+[node name="Investigate" parent="StateMachine" instance=ExtResource("8_7f1rg")]
 
 [node name="AvoidanceMap" parent="." instance=ExtResource("3_8fgeq")]
 tick_rate = 0.2

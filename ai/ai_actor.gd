@@ -12,6 +12,8 @@ class_name AIActor
 var move_speed = 0
 
 var pause_point : Vector2
+var last_known_direction : Vector2
+var target_detect_state : State
 
 var directions : Array = [
 	Vector2(0,-1), Vector2(1,-1), Vector2(1, 0), 
@@ -158,7 +160,7 @@ func resume_patrol():
 	nav_agent.target_position = pause_point
 	keep_navigation_path_reachable()
 
-#Flee
+# Flee
 func set_flee_position():
 	if not follow_target: # cannot flee if no target provided
 		return
@@ -189,6 +191,16 @@ func get_perpendicular_vector_counter(direction : Vector2) -> Vector2:
 
 func change_flee_direction():
 	clockwise = !clockwise
+
+# Investigate
+func set_last_known_direction(last_known_position : Vector2):
+	last_known_direction = last_known_position - global_position
+	last_known_direction = last_known_direction.normalized()
+
+func get_invesitgate_position():
+	move_speed = run_speed
+	nav_agent.target_position = global_position + (last_known_direction * move_speed)
+	keep_navigation_path_reachable()
 
 # NavigationAgent2D Signals
 func _on_navigation_agent_2d_velocity_computed(safe_velocity):

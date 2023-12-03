@@ -1,0 +1,11 @@
+[gd_scene load_steps=2 format=3 uid="uid://d4a1bvvirc1kb"]
+
+[ext_resource type="Script" path="res://fsm/states/InvestigateState.gd" id="1_x3o08"]
+
+[node name="Investigate" type="Node"]
+script = ExtResource("1_x3o08")
+
+[node name="SearchTimer" type="Timer" parent="."]
+wait_time = 2.0
+
+[connection signal="timeout" from="SearchTimer" to="." method="_on_search_timer_timeout"]

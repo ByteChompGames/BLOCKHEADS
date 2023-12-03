@@ -31,7 +31,8 @@ func physics_update(_delta : float):
 		actor.move(_delta)
 
 func on_detect_exit_transition(_detected_body):
-	actor.follow_target = null
+	actor.target_detect_state = self
+	actor.set_last_known_direction(_detected_body.global_position)
 	Transitioned.emit(self, on_detect_lost_transition_state.name.to_lower())
 
 func _on_pathing_timer_timeout():

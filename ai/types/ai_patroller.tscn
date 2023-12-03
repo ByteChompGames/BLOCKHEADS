@@ -1,4 +1,4 @@
-[gd_scene load_steps=19 format=3 uid="uid://cc0bjkiwauiae"]
+[gd_scene load_steps=20 format=3 uid="uid://cc0bjkiwauiae"]
 
 [ext_resource type="Script" path="res://ai/ai_actor.gd" id="1_psd5p"]
 [ext_resource type="Texture2D" uid="uid://cgfkce2s0ylyl" path="res://art/CharacterSpriteSheet.png" id="2_jrh86"]
@@ -8,6 +8,7 @@
 [ext_resource type="PackedScene" uid="uid://dkt5fmgjt38ag" path="res://fsm/states/patrol.tscn" id="7_dd3bi"]
 [ext_resource type="PackedScene" uid="uid://drinc02y11xps" path="res://fsm/states/flee.tscn" id="8_0v6p4"]
 [ext_resource type="PackedScene" uid="uid://gt0junxxlrpj" path="res://ai/components/detection_range.tscn" id="8_1ivpa"]
+[ext_resource type="PackedScene" uid="uid://d4a1bvvirc1kb" path="res://fsm/states/investigate.tscn" id="8_j6oly"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_tbfps"]
 atlas = ExtResource("2_jrh86")
@@ -133,11 +134,15 @@ higher_id_detect_transition = NodePath("../Flee")
 
 [node name="Follow" parent="StateMachine" node_paths=PackedStringArray("actor", "on_detect_lost_transition_state") instance=ExtResource("6_ldehr")]
 actor = NodePath("../..")
-on_detect_lost_transition_state = NodePath("../Patrol")
+on_detect_lost_transition_state = NodePath("../Investigate")
 
 [node name="Flee" parent="StateMachine" node_paths=PackedStringArray("actor", "on_detect_lost_transition_state") instance=ExtResource("8_0v6p4")]
 actor = NodePath("../..")
-on_detect_lost_transition_state = NodePath("../Patrol")
+on_detect_lost_transition_state = NodePath("../Investigate")
+
+[node name="Investigate" parent="StateMachine" node_paths=PackedStringArray("actor", "on_time_out_transition") instance=ExtResource("8_j6oly")]
+actor = NodePath("../..")
+on_time_out_transition = NodePath("../Patrol")
 
 [node name="DetectionRange" parent="." instance=ExtResource("8_1ivpa")]
 collision_layer = 2
