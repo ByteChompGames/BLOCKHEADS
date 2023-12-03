@@ -152,7 +152,6 @@ actor = NodePath("../..")
 wait_time = 0.2
 
 [node name="SwitchDirectionTimer" type="Timer" parent="StateMachine/Flee"]
-wait_time = 10.0
 
 [connection signal="velocity_computed" from="NavigationAgent2D" to="." method="_on_navigation_agent_2d_velocity_computed"]
 [connection signal="timeout" from="StateMachine/Idle/WaitTimer" to="StateMachine/Idle" method="_on_timer_timeout"]

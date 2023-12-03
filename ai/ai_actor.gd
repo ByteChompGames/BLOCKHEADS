@@ -56,6 +56,7 @@ func get_context_direction() -> Vector2:
 	return directions[selected]
 
 func move(delta : float):
+	
 	var direction = to_local(nav_agent.get_next_path_position()).normalized() # set move direction to next point on navigation path
 	set_interests(direction)
 	
