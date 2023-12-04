@@ -36,8 +36,6 @@ func on_child_transitioned(state, new_state_name):
 	
 	new_state.enter()
 	current_state = new_state
-	
-	print(current_state.name)
 
 
 func _on_detection_range_body_entered(body):

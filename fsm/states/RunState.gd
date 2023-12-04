@@ -24,6 +24,8 @@ func physics_update(_delta : float):
 			actor.stop()
 	else:
 		actor.move(_delta)
+	
+	actor.set_animation_based_on_velocity()
 
 func _on_repath_timer_timeout():
 	repath_timer.wait_time = randf_range(repath_range.x, repath_range.y)

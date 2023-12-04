@@ -29,6 +29,8 @@ func physics_update(_delta : float):
 	else:
 		actor.set_follow_speed()
 		actor.move(_delta)
+	
+	actor.set_animation_based_on_velocity()
 
 func on_detect_exit_transition(_detected_body):
 	actor.target_detect_state = self

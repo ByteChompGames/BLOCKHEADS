@@ -28,6 +28,8 @@ func physics_update(_delta : float):
 			patrol_timer.start()
 	else:
 		actor.move(_delta)
+	
+	actor.set_animation_based_on_velocity()
 
 func exit():
 	if not patrol_timer.is_stopped():

@@ -26,9 +26,6 @@ var clockwise = true
 @onready var animated_sprite = $AnimatedSprite2D
 @onready var avoidance_map := $AvoidanceMap
 
-func _physics_process(delta):
-	set_animation_based_on_velocity()
-
 func set_animation_based_on_velocity():
 	if move_speed < walk_speed:
 		animated_sprite.play("idle")

@@ -1,15 +1,16 @@
-[gd_scene load_steps=21 format=3 uid="uid://ciw2tmdy1hnc6"]
+[gd_scene load_steps=23 format=3 uid="uid://ciw2tmdy1hnc6"]
 
 [ext_resource type="Texture2D" uid="uid://cgfkce2s0ylyl" path="res://art/CharacterSpriteSheet.png" id="1_4pvmd"]
 [ext_resource type="Script" path="res://ai/ai_actor.gd" id="1_hcyw6"]
 [ext_resource type="PackedScene" uid="uid://bela8ivbqbepi" path="res://ai/components/avoidance_map.tscn" id="3_8fgeq"]
 [ext_resource type="PackedScene" uid="uid://c5wnijgvhdwmi" path="res://fsm/state_machine.tscn" id="4_oapu4"]
 [ext_resource type="PackedScene" uid="uid://bvopfcgs6fsb2" path="res://fsm/states/idle.tscn" id="5_bryg5"]
-[ext_resource type="PackedScene" uid="uid://cdkexnalcke6j" path="res://fsm/states/follow.tscn" id="6_aeawx"]
-[ext_resource type="PackedScene" uid="uid://dkt5fmgjt38ag" path="res://fsm/states/patrol.tscn" id="7_7dbar"]
-[ext_resource type="PackedScene" uid="uid://d4a1bvvirc1kb" path="res://fsm/states/investigate.tscn" id="8_7f1rg"]
-[ext_resource type="PackedScene" uid="uid://drinc02y11xps" path="res://fsm/states/flee.tscn" id="8_cjekq"]
 [ext_resource type="PackedScene" uid="uid://gt0junxxlrpj" path="res://ai/components/detection_range.tscn" id="9_17brq"]
+[ext_resource type="Script" path="res://fsm/states/AttackState.gd" id="9_ue76d"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_jxsb6"]
+atlas = ExtResource("1_4pvmd")
+region = Rect2(64, 16, 16, 16)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_tbfps"]
 atlas = ExtResource("1_4pvmd")
@@ -18,6 +19,22 @@ region = Rect2(0, 0, 16, 16)
 [sub_resource type="AtlasTexture" id="AtlasTexture_ekxi0"]
 atlas = ExtResource("1_4pvmd")
 region = Rect2(16, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_axgvl"]
+atlas = ExtResource("1_4pvmd")
+region = Rect2(48, 16, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_orxyp"]
+atlas = ExtResource("1_4pvmd")
+region = Rect2(32, 16, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_vver2"]
+atlas = ExtResource("1_4pvmd")
+region = Rect2(16, 16, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_bb6o8"]
+atlas = ExtResource("1_4pvmd")
+region = Rect2(0, 16, 16, 16)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_l1au2"]
 atlas = ExtResource("1_4pvmd")
@@ -43,6 +60,14 @@ region = Rect2(48, 0, 16, 16)
 animations = [{
 "frames": [{
 "duration": 1.0,
+"texture": SubResource("AtlasTexture_jxsb6")
+}],
+"loop": true,
+"name": &"hurt",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
 "texture": SubResource("AtlasTexture_tbfps")
 }, {
 "duration": 1.0,
@@ -51,6 +76,38 @@ animations = [{
 "loop": true,
 "name": &"idle",
 "speed": 2.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_axgvl")
+}],
+"loop": true,
+"name": &"left_attack",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_orxyp")
+}],
+"loop": true,
+"name": &"left_attack_tel",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_vver2")
+}],
+"loop": true,
+"name": &"right_attack",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_bb6o8")
+}],
+"loop": true,
+"name": &"right_attack_tel",
+"speed": 5.0
 }, {
 "frames": [{
 "duration": 1.0,
@@ -98,7 +155,7 @@ z_index = 10
 z_as_relative = false
 texture_filter = 1
 sprite_frames = SubResource("SpriteFrames_yue47")
-animation = &"idle"
+animation = &"right_attack_tel"
 autoplay = "idle"
 
 [node name="DropShadow" type="Sprite2D" parent="."]
@@ -121,26 +178,41 @@ target_desired_distance = 24.0
 avoidance_enabled = true
 
 [node name="StateMachine" parent="." node_paths=PackedStringArray("initial_state") instance=ExtResource("4_oapu4")]
-initial_state = NodePath("Idle")
+initial_state = NodePath("Attack")
 
-[node name="Idle" parent="StateMachine" instance=ExtResource("5_bryg5")]
+[node name="Idle" parent="StateMachine" node_paths=PackedStringArray("actor", "lower_id_detect_transition", "higher_id_detect_transition") instance=ExtResource("5_bryg5")]
+actor = NodePath("../..")
+lower_id_detect_transition = NodePath("../Attack")
+higher_id_detect_transition = NodePath("../Attack")
 
-[node name="Follow" parent="StateMachine" instance=ExtResource("6_aeawx")]
+[node name="Attack" type="Node" parent="StateMachine" node_paths=PackedStringArray("actor", "animator", "attack_finished_transition_state")]
+script = ExtResource("9_ue76d")
+actor = NodePath("../..")
+animator = NodePath("../../AnimatedSprite2D")
+attack_finished_transition_state = NodePath("../Idle")
 
-[node name="Patrol" parent="StateMachine" instance=ExtResource("7_7dbar")]
+[node name="TelegraphTimer" type="Timer" parent="StateMachine/Attack"]
+wait_time = 0.5
+one_shot = true
 
-[node name="Flee" parent="StateMachine" instance=ExtResource("8_cjekq")]
-
-[node name="Investigate" parent="StateMachine" instance=ExtResource("8_7f1rg")]
+[node name="EndAttackTimer" type="Timer" parent="StateMachine/Attack"]
+wait_time = 0.25
+one_shot = true
 
 [node name="AvoidanceMap" parent="." instance=ExtResource("3_8fgeq")]
 tick_rate = 0.2
 
 [node name="DetectionRange" parent="." instance=ExtResource("9_17brq")]
+collision_layer = 2
+collision_mask = 2
 
 [node name="CollisionShape2D" parent="DetectionRange" index="0"]
 shape = SubResource("CircleShape2D_yemqb")
 
 [connection signal="velocity_computed" from="NavigationAgent2D" to="." method="_on_navigation_agent_2d_velocity_computed"]
+[connection signal="timeout" from="StateMachine/Attack/TelegraphTimer" to="StateMachine/Attack" method="_on_telegraph_timer_timeout"]
+[connection signal="timeout" from="StateMachine/Attack/EndAttackTimer" to="StateMachine/Attack" method="_on_end_attack_timer_timeout"]
+[connection signal="body_entered" from="DetectionRange" to="StateMachine" method="_on_detection_range_body_entered"]
+[connection signal="body_exited" from="DetectionRange" to="StateMachine" method="_on_detection_range_body_exited"]
 
 [editable path="DetectionRange"]

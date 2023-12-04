@@ -27,6 +27,8 @@ func physics_update(_delta : float):
 	else:
 		actor.move(_delta)
 	
+	actor.set_animation_based_on_velocity()
+	
 
 func _on_timer_timeout():
 	actor.set_wander_position()
