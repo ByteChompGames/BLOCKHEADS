@@ -199,6 +199,22 @@ func get_invesitgate_position():
 	nav_agent.target_position = global_position + (last_known_direction * move_speed)
 	keep_navigation_path_reachable()
 
+# Health & Damage
+func take_damage():
+	# - set readable value to change state to hurt
+	# - get and store direction of hit
+	print(name, " was hit.")
+
+# Attacks
+
+func perform_attack():
+	var attack_direction = Vector2.DOWN
+	if follow_target:
+		attack_direction = follow_target.global_position - global_position
+		attack_direction = attack_direction.normalized()
+	
+	$MeleeAttack.look_at(global_position + attack_direction)
+
 # NavigationAgent2D Signals
 func _on_navigation_agent_2d_velocity_computed(safe_velocity):
 	velocity = safe_velocity

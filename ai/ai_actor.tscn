@@ -1,12 +1,15 @@
-[gd_scene load_steps=23 format=3 uid="uid://ciw2tmdy1hnc6"]
+[gd_scene load_steps=28 format=3 uid="uid://ciw2tmdy1hnc6"]
 
 [ext_resource type="Texture2D" uid="uid://cgfkce2s0ylyl" path="res://art/CharacterSpriteSheet.png" id="1_4pvmd"]
 [ext_resource type="Script" path="res://ai/ai_actor.gd" id="1_hcyw6"]
 [ext_resource type="PackedScene" uid="uid://bela8ivbqbepi" path="res://ai/components/avoidance_map.tscn" id="3_8fgeq"]
+[ext_resource type="PackedScene" uid="uid://dtdutjtydoob5" path="res://ai/components/hurtbox.tscn" id="3_63ai6"]
 [ext_resource type="PackedScene" uid="uid://c5wnijgvhdwmi" path="res://fsm/state_machine.tscn" id="4_oapu4"]
 [ext_resource type="PackedScene" uid="uid://bvopfcgs6fsb2" path="res://fsm/states/idle.tscn" id="5_bryg5"]
 [ext_resource type="PackedScene" uid="uid://gt0junxxlrpj" path="res://ai/components/detection_range.tscn" id="9_17brq"]
+[ext_resource type="PackedScene" uid="uid://c276djd45tjlh" path="res://ai/components/hitbox.tscn" id="9_fdeyr"]
 [ext_resource type="Script" path="res://fsm/states/AttackState.gd" id="9_ue76d"]
+[ext_resource type="PackedScene" uid="uid://c6ek2ogevrtxk" path="res://ai/components/attack_effects.tscn" id="10_mflq4"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_jxsb6"]
 atlas = ExtResource("1_4pvmd")
@@ -141,8 +144,15 @@ animations = [{
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_gnndl"]
 size = Vector2(10, 12)
 
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_n5ef3"]
+radius = 5.0
+height = 14.0
+
 [sub_resource type="CircleShape2D" id="CircleShape2D_yemqb"]
 radius = 48.0
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_u0pcm"]
+radius = 6.0
 
 [node name="AIActor" type="CharacterBody2D" groups=["actor"]]
 collision_layer = 2
@@ -177,18 +187,26 @@ path_desired_distance = 24.0
 target_desired_distance = 24.0
 avoidance_enabled = true
 
+[node name="Hurtbox" parent="." instance=ExtResource("3_63ai6")]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Hurtbox"]
+z_index = 100
+shape = SubResource("CapsuleShape2D_n5ef3")
+
 [node name="StateMachine" parent="." node_paths=PackedStringArray("initial_state") instance=ExtResource("4_oapu4")]
-initial_state = NodePath("Attack")
+initial_state = NodePath("Idle")
 
 [node name="Idle" parent="StateMachine" node_paths=PackedStringArray("actor", "lower_id_detect_transition", "higher_id_detect_transition") instance=ExtResource("5_bryg5")]
 actor = NodePath("../..")
 lower_id_detect_transition = NodePath("../Attack")
 higher_id_detect_transition = NodePath("../Attack")
 
-[node name="Attack" type="Node" parent="StateMachine" node_paths=PackedStringArray("actor", "animator", "attack_finished_transition_state")]
+[node name="Attack" type="Node" parent="StateMachine" node_paths=PackedStringArray("actor", "animator", "hitbox_shape", "attack_effects", "attack_finished_transition_state")]
 script = ExtResource("9_ue76d")
 actor = NodePath("../..")
 animator = NodePath("../../AnimatedSprite2D")
+hitbox_shape = NodePath("../../MeleeAttack/Hitbox/CollisionShape2D")
+attack_effects = NodePath("../../MeleeAttack/Hitbox/AttackEffects")
 attack_finished_transition_state = NodePath("../Idle")
 
 [node name="TelegraphTimer" type="Timer" parent="StateMachine/Attack"]
@@ -208,6 +226,20 @@ collision_mask = 2
 
 [node name="CollisionShape2D" parent="DetectionRange" index="0"]
 shape = SubResource("CircleShape2D_yemqb")
+
+[node name="MeleeAttack" type="Node2D" parent="."]
+
+[node name="Hitbox" parent="MeleeAttack" instance=ExtResource("9_fdeyr")]
+position = Vector2(14, 0)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="MeleeAttack/Hitbox"]
+shape = SubResource("CircleShape2D_u0pcm")
+disabled = true
+
+[node name="AttackEffects" parent="MeleeAttack/Hitbox" instance=ExtResource("10_mflq4")]
+z_index = 20
+rotation = -1.5708
+frame_progress = 0.11274
 
 [connection signal="velocity_computed" from="NavigationAgent2D" to="." method="_on_navigation_agent_2d_velocity_computed"]
 [connection signal="timeout" from="StateMachine/Attack/TelegraphTimer" to="StateMachine/Attack" method="_on_telegraph_timer_timeout"]
