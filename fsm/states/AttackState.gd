@@ -44,4 +44,6 @@ func _on_telegraph_timer_timeout():
 
 func _on_end_attack_timer_timeout():
 	hitbox_shape.set_deferred("disabled", true)
+	actor.in_attack_cooldown = true
+	actor.global_attack_cooldown_timer.start()
 	Transitioned.emit(self, attack_finished_transition_state.name.to_lower())

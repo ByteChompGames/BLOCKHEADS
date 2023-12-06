@@ -22,3 +22,6 @@ func on_detect_enter_transition(_detected_body):
 
 func on_detect_exit_transition(_detected_body):
 	pass
+
+func in_attack_range_transition():
+	pass

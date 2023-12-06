@@ -24,7 +24,10 @@ func exit():
 		pathing_timer.stop()
 
 func physics_update(_delta : float):
-	if actor.has_reached_destination():
+	
+	if actor.is_in_attack_range() and not actor.in_attack_cooldown:
+		in_attack_range_transition()
+	elif actor.has_reached_destination():
 		actor.stop()
 	else:
 		actor.set_follow_speed()
@@ -36,6 +39,9 @@ func on_detect_exit_transition(_detected_body):
 	actor.target_detect_state = self
 	actor.set_last_known_direction(_detected_body.global_position)
 	Transitioned.emit(self, on_detect_lost_transition_state.name.to_lower())
+
+func in_attack_range_transition():
+	Transitioned.emit(self, "attack")
 
 func _on_pathing_timer_timeout():
 	actor.set_follow_position()

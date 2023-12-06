@@ -37,7 +37,6 @@ func on_child_transitioned(state, new_state_name):
 	new_state.enter()
 	current_state = new_state
 
-
 func _on_detection_range_body_entered(body):
 	if body == current_state.actor:
 		return

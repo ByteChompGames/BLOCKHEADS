@@ -22,9 +22,16 @@ var directions : Array = [
 var interests = [0,0,0,0,0,0,0,0]
 var clockwise = true
 
+var attack_range = 0
+var in_attack_cooldown = false
+
 @onready var nav_agent = $NavigationAgent2D
 @onready var animated_sprite = $AnimatedSprite2D
 @onready var avoidance_map := $AvoidanceMap
+@onready var global_attack_cooldown_timer = $GlobalAttackCooldownTimer
+
+func _ready():
+	attack_range = nav_agent.target_desired_distance * 2
 
 func set_animation_based_on_velocity():
 	if move_speed < walk_speed:
@@ -207,6 +214,16 @@ func take_damage():
 
 # Attacks
 
+func is_in_attack_range() -> bool: # returns true if follow target is closer than attack range
+	if follow_target == null: # cannot be in range if no target available
+		return false;
+	
+	if nav_agent.distance_to_target() <= attack_range:
+		return true
+	else:
+		return false
+	
+
 func perform_attack():
 	var attack_direction = Vector2.DOWN
 	if follow_target:
@@ -219,3 +236,7 @@ func perform_attack():
 func _on_navigation_agent_2d_velocity_computed(safe_velocity):
 	velocity = safe_velocity
 	move_and_slide()
+
+
+func _on_global_attack_cooldown_timer_timeout():
+	in_attack_cooldown = false
