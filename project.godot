@@ -19,12 +19,17 @@ config/icon="res://icon.svg"
 
 [display]
 
-window/size/viewport_width=1024
-window/size/viewport_height=756
+window/size/viewport_width=1184
+window/size/viewport_height=860
 
 [dotnet]
 
 project/assembly_name="Gd Ai"
+
+[editor]
+
+movie_writer/mjpeg_quality=1.0
+movie_writer/movie_file="C:/Users/jorda/Videos/ByteChomp/BLOCKHEADS/EngineRecordings/Move&Nav-Gameplay.avi"
 
 [rendering]
 
