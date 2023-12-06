@@ -14,7 +14,7 @@ outlines = Array[PackedVector2Array]([PackedVector2Array(48, 48, 544, 48, 544, 3
 script = ExtResource("1_bgi2b")
 
 [node name="Camera2D" type="Camera2D" parent="."]
-position = Vector2(293, 216)
+position = Vector2(296, 215)
 zoom = Vector2(2, 2)
 
 [node name="GroundTileMap" parent="." instance=ExtResource("1_u4ohv")]
