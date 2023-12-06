@@ -1,0 +1,17 @@
+[gd_scene load_steps=2 format=3 uid="uid://bbwjmx6vvnka5"]
+
+[ext_resource type="Script" path="res://fsm/states/AttackState.gd" id="1_xi21q"]
+
+[node name="Attack" type="Node"]
+script = ExtResource("1_xi21q")
+
+[node name="TelegraphTimer" type="Timer" parent="."]
+wait_time = 0.5
+one_shot = true
+
+[node name="EndAttackTimer" type="Timer" parent="."]
+wait_time = 0.25
+one_shot = true
+
+[connection signal="timeout" from="TelegraphTimer" to="." method="_on_telegraph_timer_timeout"]
+[connection signal="timeout" from="EndAttackTimer" to="." method="_on_end_attack_timer_timeout"]

@@ -18,6 +18,8 @@ func _ready():
 func _process(delta):
 	if current_state:
 		current_state.update(delta)
+		if current_state.actor.was_hit:
+			current_state.was_hit_transition()
 
 func _physics_process(delta):
 	if current_state:
@@ -33,6 +35,8 @@ func on_child_transitioned(state, new_state_name):
 	
 	if current_state:
 		current_state.exit()
+	
+	print(owner.name, " transitioned from - ", current_state.name, " to - ", new_state.name)
 	
 	new_state.enter()
 	current_state = new_state

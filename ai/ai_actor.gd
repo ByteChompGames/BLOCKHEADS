@@ -25,6 +25,8 @@ var clockwise = true
 var attack_range = 0
 var in_attack_cooldown = false
 
+var was_hit = false
+
 @onready var nav_agent = $NavigationAgent2D
 @onready var animated_sprite = $AnimatedSprite2D
 @onready var avoidance_map := $AvoidanceMap
@@ -210,7 +212,17 @@ func get_invesitgate_position():
 func take_damage():
 	# - set readable value to change state to hurt
 	# - get and store direction of hit
-	print(name, " was hit.")
+	was_hit = true
+
+func set_knockback_position():
+	var knockback_direction = Vector2.DOWN
+	
+	if follow_target != null:
+		knockback_direction = global_position - follow_target.global_position
+		knockback_direction = knockback_direction.normalized()
+	
+	nav_agent.target_position = global_position + (knockback_direction * (move_speed + nav_agent.target_desired_distance))
+	keep_navigation_path_reachable()
 
 # Attacks
 

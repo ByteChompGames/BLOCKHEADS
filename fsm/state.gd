@@ -25,3 +25,6 @@ func on_detect_exit_transition(_detected_body):
 
 func in_attack_range_transition():
 	pass
+
+func was_hit_transition():
+	Transitioned.emit(self, "hurt")
