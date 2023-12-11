@@ -119,7 +119,6 @@ shape = SubResource("RectangleShape2D_gnndl")
 path_desired_distance = 24.0
 target_desired_distance = 24.0
 avoidance_enabled = true
-debug_enabled = true
 
 [node name="StateMachine" parent="." node_paths=PackedStringArray("initial_state") instance=ExtResource("4_8n7t3")]
 initial_state = NodePath("Idle")

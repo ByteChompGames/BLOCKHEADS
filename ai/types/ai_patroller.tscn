@@ -119,7 +119,6 @@ shape = SubResource("RectangleShape2D_gnndl")
 path_desired_distance = 24.0
 target_desired_distance = 24.0
 avoidance_enabled = true
-debug_enabled = true
 
 [node name="AvoidanceMap" parent="." instance=ExtResource("3_qk8i3")]
 tick_rate = 0.2
