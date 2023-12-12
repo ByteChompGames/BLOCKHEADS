@@ -36,6 +36,9 @@ func _on_timer_timeout():
 func on_detect_enter_transition(_detected_body):
 	actor.follow_target = _detected_body
 	
+	if actor.health < 30:
+		Transitioned.emit(self, "flee")
+	
 	if _detected_body.AI_ID > actor.AI_ID:
 		Transitioned.emit(self, higher_id_detect_transition.name.to_lower())
 	if _detected_body.AI_ID < actor.AI_ID:

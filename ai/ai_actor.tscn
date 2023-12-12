@@ -1,4 +1,4 @@
-[gd_scene load_steps=30 format=3 uid="uid://ciw2tmdy1hnc6"]
+[gd_scene load_steps=32 format=3 uid="uid://ciw2tmdy1hnc6"]
 
 [ext_resource type="Texture2D" uid="uid://cgfkce2s0ylyl" path="res://art/CharacterSpriteSheet.png" id="1_4pvmd"]
 [ext_resource type="Script" path="res://ai/ai_actor.gd" id="1_hcyw6"]
@@ -11,6 +11,8 @@
 [ext_resource type="Script" path="res://fsm/states/HurtState.gd" id="8_4vm7q"]
 [ext_resource type="PackedScene" uid="uid://gt0junxxlrpj" path="res://ai/components/detection_range.tscn" id="9_17brq"]
 [ext_resource type="PackedScene" uid="uid://c276djd45tjlh" path="res://ai/components/hitbox.tscn" id="9_fdeyr"]
+[ext_resource type="PackedScene" uid="uid://drinc02y11xps" path="res://fsm/states/flee.tscn" id="9_qg4yy"]
+[ext_resource type="PackedScene" uid="uid://d4a1bvvirc1kb" path="res://fsm/states/investigate.tscn" id="10_bgm3j"]
 [ext_resource type="PackedScene" uid="uid://c6ek2ogevrtxk" path="res://ai/components/attack_effects.tscn" id="10_mflq4"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_jxsb6"]
@@ -205,7 +207,7 @@ higher_id_detect_transition = NodePath("../Follow")
 
 [node name="Follow" parent="StateMachine" node_paths=PackedStringArray("actor", "on_detect_lost_transition_state") instance=ExtResource("6_2c6q0")]
 actor = NodePath("../..")
-on_detect_lost_transition_state = NodePath("../Idle")
+on_detect_lost_transition_state = NodePath("../Investigate")
 
 [node name="Attack" parent="StateMachine" node_paths=PackedStringArray("actor", "animator", "hitbox_shape", "attack_effects", "attack_finished_transition_state") instance=ExtResource("7_pftqi")]
 actor = NodePath("../..")
@@ -221,6 +223,14 @@ actor = NodePath("../..")
 [node name="KnockbackTimer" type="Timer" parent="StateMachine/Hurt"]
 wait_time = 0.25
 one_shot = true
+
+[node name="Flee" parent="StateMachine" node_paths=PackedStringArray("actor", "on_detect_lost_transition_state") instance=ExtResource("9_qg4yy")]
+actor = NodePath("../..")
+on_detect_lost_transition_state = NodePath("../Investigate")
+
+[node name="Investigate" parent="StateMachine" node_paths=PackedStringArray("actor", "on_time_out_transition") instance=ExtResource("10_bgm3j")]
+actor = NodePath("../..")
+on_time_out_transition = NodePath("../Idle")
 
 [node name="AvoidanceMap" parent="." instance=ExtResource("3_8fgeq")]
 tick_rate = 0.2
@@ -249,10 +259,13 @@ frame_progress = 0.11274
 [node name="GlobalAttackCooldownTimer" type="Timer" parent="."]
 one_shot = true
 
+[node name="HealTimer" type="Timer" parent="."]
+
 [connection signal="velocity_computed" from="NavigationAgent2D" to="." method="_on_navigation_agent_2d_velocity_computed"]
 [connection signal="timeout" from="StateMachine/Hurt/KnockbackTimer" to="StateMachine/Hurt" method="_on_knockback_timer_timeout"]
 [connection signal="body_entered" from="DetectionRange" to="StateMachine" method="_on_detection_range_body_entered"]
 [connection signal="body_exited" from="DetectionRange" to="StateMachine" method="_on_detection_range_body_exited"]
 [connection signal="timeout" from="GlobalAttackCooldownTimer" to="." method="_on_global_attack_cooldown_timer_timeout"]
+[connection signal="timeout" from="HealTimer" to="." method="_on_heal_timer_timeout"]
 
 [editable path="DetectionRange"]

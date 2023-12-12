@@ -27,6 +27,12 @@ func physics_update(_delta : float):
 
 
 func _on_knockback_timer_timeout():
+	if actor.health <= 0:
+		actor.queue_free()
+		return
+	elif actor.health > 0 and actor.health <= 25:
+		Transitioned.emit(self, "flee")
+	
 	if actor.is_in_attack_range() and not actor.in_attack_cooldown:
 		Transitioned.emit(self, "attack")
 	else:

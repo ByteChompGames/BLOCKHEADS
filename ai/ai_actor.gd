@@ -1,6 +1,12 @@
 extends CharacterBody2D
 class_name AIActor
 
+enum AttackSide
+{
+	RIGHT,
+	LEFT
+}
+
 @export var follow_target : AIActor
 @export var patrol_path : PatrolPath
 @export var AI_ID = 0
@@ -8,6 +14,8 @@ class_name AIActor
 @export var walk_speed = 25
 @export var run_speed = 50
 @export var wander_radius = 50
+
+@export var health = 100
 
 var move_speed = 0
 
@@ -24,6 +32,7 @@ var clockwise = true
 
 var attack_range = 0
 var in_attack_cooldown = false
+var last_attack_side = AttackSide.LEFT
 
 var was_hit = false
 
@@ -31,9 +40,17 @@ var was_hit = false
 @onready var animated_sprite = $AnimatedSprite2D
 @onready var avoidance_map := $AvoidanceMap
 @onready var global_attack_cooldown_timer = $GlobalAttackCooldownTimer
+@onready var heal_timer = $HealTimer
 
 func _ready():
 	attack_range = nav_agent.target_desired_distance * 2
+
+func _process(delta):
+	if follow_target == null and health < 100:
+		if heal_timer.is_stopped():
+			heal_timer.start()
+	if follow_target != null or health >= 100:
+		heal_timer.stop()
 
 func set_animation_based_on_velocity():
 	if move_speed < walk_speed:
@@ -205,14 +222,17 @@ func set_last_known_direction(last_known_position : Vector2):
 
 func get_invesitgate_position():
 	move_speed = run_speed
-	nav_agent.target_position = global_position + (last_known_direction * move_speed)
+	nav_agent.target_position = (global_position + last_known_direction) * move_speed
 	keep_navigation_path_reachable()
 
 # Health & Damage
-func take_damage():
+func take_damage(damage : int):
 	# - set readable value to change state to hurt
 	# - get and store direction of hit
+	print(name, " was hit for ", damage, " damage.", health, " total health remaining.")
+	health -= damage
 	was_hit = true
+	
 
 func set_knockback_position():
 	var knockback_direction = Vector2.DOWN
@@ -244,6 +264,22 @@ func perform_attack():
 	
 	$MeleeAttack.look_at(global_position + attack_direction)
 
+func play_attack_telegraph():
+	match last_attack_side:
+		AttackSide.LEFT:
+			animated_sprite.play("right_attack_tel")
+		AttackSide.RIGHT:
+			animated_sprite.play("left_attack_tel")
+
+func play_attack():
+	match last_attack_side:
+		AttackSide.LEFT:
+			animated_sprite.play("right_attack")
+			last_attack_side = AttackSide.RIGHT
+		AttackSide.RIGHT:
+			animated_sprite.play("left_attack")
+			last_attack_side = AttackSide.LEFT
+
 # NavigationAgent2D Signals
 func _on_navigation_agent_2d_velocity_computed(safe_velocity):
 	velocity = safe_velocity
@@ -252,3 +288,11 @@ func _on_navigation_agent_2d_velocity_computed(safe_velocity):
 
 func _on_global_attack_cooldown_timer_timeout():
 	in_attack_cooldown = false
+
+
+func _on_heal_timer_timeout():
+	health += 10
+	print(name, " has healed 10 points for a total of ", health, " health.")
+	if health >= 100:
+		health = 100
+		heal_timer.stop()
