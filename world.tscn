@@ -1,9 +1,11 @@
-[gd_scene load_steps=6 format=3 uid="uid://vsu366pchmga"]
+[gd_scene load_steps=8 format=3 uid="uid://vsu366pchmga"]
 
 [ext_resource type="Script" path="res://world.gd" id="1_bgi2b"]
 [ext_resource type="PackedScene" uid="uid://bbuq2ucgx0t3b" path="res://environment/ground_tile_map.tscn" id="1_u4ohv"]
+[ext_resource type="PackedScene" uid="uid://chtl47mlrcde4" path="res://ai/types/wanderer/ai_wanderer.tscn" id="5_4vbyw"]
 [ext_resource type="PackedScene" uid="uid://cmghb5wkow0qs" path="res://gui.tscn" id="5_amsbq"]
-[ext_resource type="PackedScene" uid="uid://ciw2tmdy1hnc6" path="res://ai/ai_actor.tscn" id="8_r5etq"]
+[ext_resource type="PackedScene" uid="uid://msp6k3yyjw2g" path="res://ai/types/Patroller/ai_patroller.tscn" id="6_k6nix"]
+[ext_resource type="PackedScene" uid="uid://d25da10isyuuv" path="res://ai/components/patrol_path.tscn" id="7_1wn8n"]
 
 [sub_resource type="NavigationPolygon" id="NavigationPolygon_smef5"]
 vertices = PackedVector2Array(48, 48, 544, 48, 544, 384, 48, 384)
@@ -41,9 +43,86 @@ visible = false
 offset_right = -440.0
 offset_bottom = -323.0
 
-[node name="AIActor" parent="." instance=ExtResource("8_r5etq")]
-position = Vector2(233, 213)
+[node name="AI_Wanderer" parent="." instance=ExtResource("5_4vbyw")]
+position = Vector2(292, 94)
 
-[node name="AIActor2" parent="." instance=ExtResource("8_r5etq")]
-position = Vector2(276, 214)
-AI_ID = 1
+[node name="AI_Wanderer2" parent="." instance=ExtResource("5_4vbyw")]
+position = Vector2(292, 344)
+
+[node name="AI_Wanderer3" parent="." instance=ExtResource("5_4vbyw")]
+position = Vector2(473, 215)
+
+[node name="AI_Wanderer4" parent="." instance=ExtResource("5_4vbyw")]
+position = Vector2(124, 215)
+
+[node name="AI_Patroller" parent="." node_paths=PackedStringArray("patrol_path") instance=ExtResource("6_k6nix")]
+position = Vector2(473, 72)
+patrol_path = NodePath("../PatrolPath")
+
+[node name="PatrolPath" parent="." instance=ExtResource("7_1wn8n")]
+position = Vector2(473, 176)
+
+[node name="Marker2D" type="Marker2D" parent="PatrolPath"]
+position = Vector2(43, -55)
+
+[node name="Marker2D4" type="Marker2D" parent="PatrolPath"]
+
+[node name="Marker2D3" type="Marker2D" parent="PatrolPath"]
+position = Vector2(-56, -60)
+
+[node name="Marker2D2" type="Marker2D" parent="PatrolPath"]
+position = Vector2(0, -104)
+
+[node name="AI_Patroller2" parent="." node_paths=PackedStringArray("patrol_path") instance=ExtResource("6_k6nix")]
+position = Vector2(473, 362)
+patrol_path = NodePath("../PatrolPath2")
+
+[node name="PatrolPath2" parent="." instance=ExtResource("7_1wn8n")]
+position = Vector2(473, 362)
+
+[node name="Marker2D" type="Marker2D" parent="PatrolPath2"]
+position = Vector2(43, -55)
+
+[node name="Marker2D2" type="Marker2D" parent="PatrolPath2"]
+position = Vector2(0, -104)
+
+[node name="Marker2D3" type="Marker2D" parent="PatrolPath2"]
+position = Vector2(-56, -60)
+
+[node name="Marker2D4" type="Marker2D" parent="PatrolPath2"]
+
+[node name="AI_Patroller3" parent="." node_paths=PackedStringArray("patrol_path") instance=ExtResource("6_k6nix")]
+position = Vector2(126, 367)
+patrol_path = NodePath("../PatrolPath3")
+
+[node name="PatrolPath3" parent="." instance=ExtResource("7_1wn8n")]
+position = Vector2(126, 367)
+
+[node name="Marker2D" type="Marker2D" parent="PatrolPath3"]
+position = Vector2(43, -55)
+
+[node name="Marker2D2" type="Marker2D" parent="PatrolPath3"]
+position = Vector2(0, -104)
+
+[node name="Marker2D3" type="Marker2D" parent="PatrolPath3"]
+position = Vector2(-56, -60)
+
+[node name="Marker2D4" type="Marker2D" parent="PatrolPath3"]
+
+[node name="AI_Patroller4" parent="." node_paths=PackedStringArray("patrol_path") instance=ExtResource("6_k6nix")]
+position = Vector2(124, 77)
+patrol_path = NodePath("../PatrolPath4")
+
+[node name="PatrolPath4" parent="." instance=ExtResource("7_1wn8n")]
+position = Vector2(124, 182)
+
+[node name="Marker2D" type="Marker2D" parent="PatrolPath4"]
+position = Vector2(43, -55)
+
+[node name="Marker2D4" type="Marker2D" parent="PatrolPath4"]
+
+[node name="Marker2D3" type="Marker2D" parent="PatrolPath4"]
+position = Vector2(-56, -60)
+
+[node name="Marker2D2" type="Marker2D" parent="PatrolPath4"]
+position = Vector2(0, -104)

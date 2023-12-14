@@ -1,66 +1,66 @@
-[gd_scene load_steps=32 format=3 uid="uid://ciw2tmdy1hnc6"]
+[gd_scene load_steps=32 format=3 uid="uid://msp6k3yyjw2g"]
 
-[ext_resource type="Texture2D" uid="uid://cgfkce2s0ylyl" path="res://art/CharacterSpriteSheet.png" id="1_4pvmd"]
-[ext_resource type="Script" path="res://ai/ai_actor.gd" id="1_hcyw6"]
-[ext_resource type="PackedScene" uid="uid://bela8ivbqbepi" path="res://ai/components/avoidance_map.tscn" id="3_8fgeq"]
-[ext_resource type="PackedScene" uid="uid://dtdutjtydoob5" path="res://ai/components/hurtbox.tscn" id="3_63ai6"]
-[ext_resource type="PackedScene" uid="uid://c5wnijgvhdwmi" path="res://fsm/state_machine.tscn" id="4_oapu4"]
-[ext_resource type="PackedScene" uid="uid://bvopfcgs6fsb2" path="res://fsm/states/idle.tscn" id="5_bryg5"]
-[ext_resource type="PackedScene" uid="uid://cdkexnalcke6j" path="res://fsm/states/follow.tscn" id="6_2c6q0"]
-[ext_resource type="PackedScene" uid="uid://bbwjmx6vvnka5" path="res://fsm/states/attack.tscn" id="7_pftqi"]
-[ext_resource type="Script" path="res://fsm/states/HurtState.gd" id="8_4vm7q"]
-[ext_resource type="PackedScene" uid="uid://gt0junxxlrpj" path="res://ai/components/detection_range.tscn" id="9_17brq"]
-[ext_resource type="PackedScene" uid="uid://c276djd45tjlh" path="res://ai/components/hitbox.tscn" id="9_fdeyr"]
-[ext_resource type="PackedScene" uid="uid://drinc02y11xps" path="res://fsm/states/flee.tscn" id="9_qg4yy"]
-[ext_resource type="PackedScene" uid="uid://d4a1bvvirc1kb" path="res://fsm/states/investigate.tscn" id="10_bgm3j"]
-[ext_resource type="PackedScene" uid="uid://c6ek2ogevrtxk" path="res://ai/components/attack_effects.tscn" id="10_mflq4"]
+[ext_resource type="Script" path="res://ai/ai_actor.gd" id="1_wr68w"]
+[ext_resource type="Texture2D" uid="uid://cgfkce2s0ylyl" path="res://art/CharacterSpriteSheet.png" id="2_tor0j"]
+[ext_resource type="PackedScene" uid="uid://dtdutjtydoob5" path="res://ai/components/hurtbox.tscn" id="3_on4kj"]
+[ext_resource type="PackedScene" uid="uid://c5wnijgvhdwmi" path="res://fsm/state_machine.tscn" id="4_lvuy4"]
+[ext_resource type="PackedScene" uid="uid://dkt5fmgjt38ag" path="res://fsm/states/patrol.tscn" id="5_ljl86"]
+[ext_resource type="PackedScene" uid="uid://cdkexnalcke6j" path="res://fsm/states/follow.tscn" id="6_ukil1"]
+[ext_resource type="PackedScene" uid="uid://bbwjmx6vvnka5" path="res://fsm/states/attack.tscn" id="7_fa68t"]
+[ext_resource type="Script" path="res://fsm/states/HurtState.gd" id="8_wcga7"]
+[ext_resource type="PackedScene" uid="uid://drinc02y11xps" path="res://fsm/states/flee.tscn" id="9_nq710"]
+[ext_resource type="PackedScene" uid="uid://d4a1bvvirc1kb" path="res://fsm/states/investigate.tscn" id="10_h1nyt"]
+[ext_resource type="PackedScene" uid="uid://bela8ivbqbepi" path="res://ai/components/avoidance_map.tscn" id="11_npps4"]
+[ext_resource type="PackedScene" uid="uid://gt0junxxlrpj" path="res://ai/components/detection_range.tscn" id="12_qb41f"]
+[ext_resource type="PackedScene" uid="uid://c276djd45tjlh" path="res://ai/components/hitbox.tscn" id="13_pmjfn"]
+[ext_resource type="PackedScene" uid="uid://c6ek2ogevrtxk" path="res://ai/components/attack_effects.tscn" id="14_swoii"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_jxsb6"]
-atlas = ExtResource("1_4pvmd")
+atlas = ExtResource("2_tor0j")
 region = Rect2(64, 16, 16, 16)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_tbfps"]
-atlas = ExtResource("1_4pvmd")
+atlas = ExtResource("2_tor0j")
 region = Rect2(0, 0, 16, 16)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_ekxi0"]
-atlas = ExtResource("1_4pvmd")
+atlas = ExtResource("2_tor0j")
 region = Rect2(16, 0, 16, 16)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_axgvl"]
-atlas = ExtResource("1_4pvmd")
+atlas = ExtResource("2_tor0j")
 region = Rect2(48, 16, 16, 16)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_orxyp"]
-atlas = ExtResource("1_4pvmd")
+atlas = ExtResource("2_tor0j")
 region = Rect2(32, 16, 16, 16)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_vver2"]
-atlas = ExtResource("1_4pvmd")
+atlas = ExtResource("2_tor0j")
 region = Rect2(16, 16, 16, 16)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_bb6o8"]
-atlas = ExtResource("1_4pvmd")
+atlas = ExtResource("2_tor0j")
 region = Rect2(0, 16, 16, 16)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_l1au2"]
-atlas = ExtResource("1_4pvmd")
+atlas = ExtResource("2_tor0j")
 region = Rect2(64, 0, 16, 16)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_2fmn4"]
-atlas = ExtResource("1_4pvmd")
+atlas = ExtResource("2_tor0j")
 region = Rect2(0, 0, 16, 16)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_sqh86"]
-atlas = ExtResource("1_4pvmd")
+atlas = ExtResource("2_tor0j")
 region = Rect2(80, 0, 16, 16)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_qhfdt"]
-atlas = ExtResource("1_4pvmd")
+atlas = ExtResource("2_tor0j")
 region = Rect2(32, 0, 16, 16)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_300ok"]
-atlas = ExtResource("1_4pvmd")
+atlas = ExtResource("2_tor0j")
 region = Rect2(48, 0, 16, 16)
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_yue47"]
@@ -158,13 +158,15 @@ radius = 48.0
 [sub_resource type="CircleShape2D" id="CircleShape2D_u0pcm"]
 radius = 6.0
 
-[node name="AIActor" type="CharacterBody2D" groups=["actor"]]
+[node name="AI_Patroller" type="CharacterBody2D" groups=["actor"]]
+position = Vector2(473, 176)
 collision_layer = 2
 motion_mode = 1
 wall_min_slide_angle = 0.0
-script = ExtResource("1_hcyw6")
+script = ExtResource("1_wr68w")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+modulate = Color(0.921569, 0.462745, 1, 1)
 z_index = 10
 z_as_relative = false
 texture_filter = 1
@@ -178,7 +180,7 @@ z_index = 5
 z_as_relative = false
 texture_filter = 1
 position = Vector2(0, 7)
-texture = ExtResource("1_4pvmd")
+texture = ExtResource("2_tor0j")
 region_enabled = true
 region_rect = Rect2(82, 27, 12, 4)
 
@@ -191,49 +193,51 @@ path_desired_distance = 24.0
 target_desired_distance = 24.0
 avoidance_enabled = true
 
-[node name="Hurtbox" parent="." instance=ExtResource("3_63ai6")]
+[node name="Hurtbox" parent="." instance=ExtResource("3_on4kj")]
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Hurtbox"]
 z_index = 100
 shape = SubResource("CapsuleShape2D_n5ef3")
 
-[node name="StateMachine" parent="." node_paths=PackedStringArray("initial_state") instance=ExtResource("4_oapu4")]
-initial_state = NodePath("Idle")
+[node name="StateMachine" parent="." node_paths=PackedStringArray("initial_state") instance=ExtResource("4_lvuy4")]
+initial_state = NodePath("Patrol")
 
-[node name="Idle" parent="StateMachine" node_paths=PackedStringArray("actor") instance=ExtResource("5_bryg5")]
+[node name="Patrol" parent="StateMachine" node_paths=PackedStringArray("actor") instance=ExtResource("5_ljl86")]
 actor = NodePath("../..")
 
-[node name="Follow" parent="StateMachine" node_paths=PackedStringArray("actor", "on_detect_lost_transition_state") instance=ExtResource("6_2c6q0")]
+[node name="Follow" parent="StateMachine" node_paths=PackedStringArray("actor", "on_detect_lost_transition_state") instance=ExtResource("6_ukil1")]
 actor = NodePath("../..")
 on_detect_lost_transition_state = NodePath("../Investigate")
 
-[node name="Attack" parent="StateMachine" node_paths=PackedStringArray("actor", "animator", "hitbox_shape", "attack_effects", "attack_finished_transition_state") instance=ExtResource("7_pftqi")]
+[node name="Attack" parent="StateMachine" node_paths=PackedStringArray("actor", "animator", "hitbox_shape", "attack_effects", "attack_finished_transition_state", "on_target_null_transition_state") instance=ExtResource("7_fa68t")]
 actor = NodePath("../..")
 animator = NodePath("../../AnimatedSprite2D")
 hitbox_shape = NodePath("../../MeleeAttack/Hitbox/CollisionShape2D")
 attack_effects = NodePath("../../MeleeAttack/Hitbox/AttackEffects")
 attack_finished_transition_state = NodePath("../Follow")
+on_target_null_transition_state = NodePath("../Patrol")
+comboCount = 2
 
 [node name="Hurt" type="Node" parent="StateMachine" node_paths=PackedStringArray("actor")]
-script = ExtResource("8_4vm7q")
+script = ExtResource("8_wcga7")
 actor = NodePath("../..")
 
 [node name="KnockbackTimer" type="Timer" parent="StateMachine/Hurt"]
 wait_time = 0.25
 one_shot = true
 
-[node name="Flee" parent="StateMachine" node_paths=PackedStringArray("actor", "on_detect_lost_transition_state") instance=ExtResource("9_qg4yy")]
+[node name="Flee" parent="StateMachine" node_paths=PackedStringArray("actor", "on_detect_lost_transition_state") instance=ExtResource("9_nq710")]
 actor = NodePath("../..")
 on_detect_lost_transition_state = NodePath("../Investigate")
 
-[node name="Investigate" parent="StateMachine" node_paths=PackedStringArray("actor", "on_time_out_transition") instance=ExtResource("10_bgm3j")]
+[node name="Investigate" parent="StateMachine" node_paths=PackedStringArray("actor", "on_time_out_transition") instance=ExtResource("10_h1nyt")]
 actor = NodePath("../..")
-on_time_out_transition = NodePath("../Idle")
+on_time_out_transition = NodePath("../Patrol")
 
-[node name="AvoidanceMap" parent="." instance=ExtResource("3_8fgeq")]
+[node name="AvoidanceMap" parent="." instance=ExtResource("11_npps4")]
 tick_rate = 0.2
 
-[node name="DetectionRange" parent="." instance=ExtResource("9_17brq")]
+[node name="DetectionRange" parent="." instance=ExtResource("12_qb41f")]
 collision_layer = 2
 collision_mask = 2
 
@@ -242,14 +246,14 @@ shape = SubResource("CircleShape2D_yemqb")
 
 [node name="MeleeAttack" type="Node2D" parent="."]
 
-[node name="Hitbox" parent="MeleeAttack" instance=ExtResource("9_fdeyr")]
+[node name="Hitbox" parent="MeleeAttack" instance=ExtResource("13_pmjfn")]
 position = Vector2(14, 0)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="MeleeAttack/Hitbox"]
 shape = SubResource("CircleShape2D_u0pcm")
 disabled = true
 
-[node name="AttackEffects" parent="MeleeAttack/Hitbox" instance=ExtResource("10_mflq4")]
+[node name="AttackEffects" parent="MeleeAttack/Hitbox" instance=ExtResource("14_swoii")]
 z_index = 20
 rotation = -1.5708
 frame_progress = 0.11274
@@ -259,11 +263,11 @@ one_shot = true
 
 [node name="HealTimer" type="Timer" parent="."]
 
-[connection signal="velocity_computed" from="NavigationAgent2D" to="." method="_on_navigation_agent_2d_velocity_computed"]
-[connection signal="timeout" from="StateMachine/Hurt/KnockbackTimer" to="StateMachine/Hurt" method="_on_knockback_timer_timeout"]
-[connection signal="body_entered" from="DetectionRange" to="StateMachine" method="_on_detection_range_body_entered"]
-[connection signal="body_exited" from="DetectionRange" to="StateMachine" method="_on_detection_range_body_exited"]
-[connection signal="timeout" from="GlobalAttackCooldownTimer" to="." method="_on_global_attack_cooldown_timer_timeout"]
-[connection signal="timeout" from="HealTimer" to="." method="_on_heal_timer_timeout"]
+[connection signal="velocity_computed" from="NavigationAgent2D" to="." method="_on_navigation_agent_2d_velocity_computed" flags=18]
+[connection signal="timeout" from="StateMachine/Hurt/KnockbackTimer" to="StateMachine/Hurt" method="_on_knockback_timer_timeout" flags=18]
+[connection signal="body_entered" from="DetectionRange" to="StateMachine" method="_on_detection_range_body_entered" flags=18]
+[connection signal="body_exited" from="DetectionRange" to="StateMachine" method="_on_detection_range_body_exited" flags=18]
+[connection signal="timeout" from="GlobalAttackCooldownTimer" to="." method="_on_global_attack_cooldown_timer_timeout" flags=18]
+[connection signal="timeout" from="HealTimer" to="." method="_on_heal_timer_timeout" flags=18]
 
 [editable path="DetectionRange"]

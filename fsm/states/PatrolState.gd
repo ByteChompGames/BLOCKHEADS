@@ -3,9 +3,6 @@ class_name PatrolState
 
 @export var actor : AIActor
 
-@export var lower_id_detect_transition : State
-@export var higher_id_detect_transition : State
-
 var left_point_not_reached = false
 
 @onready var patrol_timer = $PatrolTimer
@@ -38,11 +35,11 @@ func exit():
 func on_detect_enter_transition(_detected_body):
 	actor.follow_target = _detected_body
 	
-	if _detected_body.AI_ID > actor.AI_ID:
-		Transitioned.emit(self, higher_id_detect_transition.name.to_lower())
+	if actor.health < 30:
+		Transitioned.emit(self, "flee")
 		check_point_not_reached()
-	if _detected_body.AI_ID < actor.AI_ID:
-		Transitioned.emit(self, lower_id_detect_transition.name.to_lower())
+	else:
+		Transitioned.emit(self, "follow")
 		check_point_not_reached()
 
 func check_point_not_reached():

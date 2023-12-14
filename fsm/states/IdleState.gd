@@ -3,9 +3,6 @@ class_name IdleState
 
 @export var actor : AIActor
 
-@export var lower_id_detect_transition : State
-@export var higher_id_detect_transition : State
-
 @onready var wait_timer = $WaitTimer
 
 func enter():
@@ -38,8 +35,6 @@ func on_detect_enter_transition(_detected_body):
 	
 	if actor.health < 30:
 		Transitioned.emit(self, "flee")
+	else:
+		Transitioned.emit(self, "follow")
 	
-	if _detected_body.AI_ID > actor.AI_ID:
-		Transitioned.emit(self, higher_id_detect_transition.name.to_lower())
-	if _detected_body.AI_ID < actor.AI_ID:
-		Transitioned.emit(self, lower_id_detect_transition.name.to_lower())

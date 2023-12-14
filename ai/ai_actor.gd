@@ -7,16 +7,14 @@ enum AttackSide
 	LEFT
 }
 
+@export var data = preload("res://ai/default_ai_data.tres")
+
 @export var follow_target : AIActor
 @export var patrol_path : PatrolPath
-@export var AI_ID = 0
 
-@export var walk_speed = 25
-@export var run_speed = 50
 @export var wander_radius = 50
 
-@export var health = 100
-
+var health = 100
 var move_speed = 0
 
 var pause_point : Vector2
@@ -44,18 +42,16 @@ var was_hit = false
 
 func _ready():
 	attack_range = nav_agent.target_desired_distance * 2
+	health = data.max_health
+	heal_timer.wait_time = data.heal_rate
 
 func _process(delta):
-	if follow_target == null and health < 100:
-		if heal_timer.is_stopped():
-			heal_timer.start()
-	if follow_target != null or health >= 100:
-		heal_timer.stop()
+	heal_over_time()
 
 func set_animation_based_on_velocity():
-	if move_speed < walk_speed:
+	if move_speed < data.walk_speed:
 		animated_sprite.play("idle")
-	elif move_speed >= walk_speed and move_speed < run_speed:
+	elif move_speed >= data.walk_speed and move_speed < data.run_speed:
 		animated_sprite.play("walk")
 	else:
 		animated_sprite.play("run")
@@ -127,7 +123,7 @@ func set_wander_position():
 	var x = randf_range(-wander_radius, wander_radius)
 	var y = randf_range(-wander_radius, wander_radius)
 	
-	move_speed = walk_speed
+	move_speed = data.walk_speed
 	nav_agent.target_position = global_position + Vector2(x, y) # set position to random point from current position
 	
 	keep_navigation_path_reachable()
@@ -137,7 +133,7 @@ func set_run_position():
 	var x = randf_range(-wander_radius, wander_radius)
 	var y = randf_range(-wander_radius, wander_radius)
 	
-	move_speed = run_speed
+	move_speed = data.run_speed
 	nav_agent.target_position = global_position + Vector2(x, y) # set position to random point from current position
 	
 	keep_navigation_path_reachable()
@@ -158,16 +154,16 @@ func set_follow_speed():
 	var run_distance = nav_agent.target_desired_distance * 2
 	
 	if nav_agent.distance_to_target() > run_distance:
-		move_speed = run_speed
+		move_speed = data.run_speed
 	else:
-		move_speed = walk_speed
+		move_speed = data.walk_speed
 
 # Patrolling
 func set_next_patrol_position():
 	if not patrol_path: # cannot set a patrol position if no path provided
 		return
 	
-	move_speed = walk_speed
+	move_speed = data.walk_speed
 	
 	# set target position to the next point in the path
 	nav_agent.target_position = patrol_path.get_next_point()
@@ -177,7 +173,7 @@ func pause_patrol():
 	pause_point = nav_agent.target_position
 
 func resume_patrol():
-	move_speed = walk_speed
+	move_speed = data.walk_speed
 	
 	# set target position to the next point in the path
 	nav_agent.target_position = pause_point
@@ -198,7 +194,7 @@ func set_flee_position():
 	else:
 		perp_direction = get_perpendicular_vector_counter(target_direction)
 	
-	move_speed = run_speed
+	move_speed = data.run_speed
 	
 	# set target direction to perpendiculat direction
 	nav_agent.target_position = global_position + (perp_direction * (move_speed + nav_agent.target_desired_distance))
@@ -221,7 +217,7 @@ func set_last_known_direction(last_known_position : Vector2):
 	last_known_direction = last_known_direction.normalized()
 
 func get_invesitgate_position():
-	move_speed = run_speed
+	move_speed = data.run_speed
 	nav_agent.target_position = (global_position + last_known_direction) * move_speed
 	keep_navigation_path_reachable()
 
@@ -229,10 +225,16 @@ func get_invesitgate_position():
 func take_damage(damage : int):
 	# - set readable value to change state to hurt
 	# - get and store direction of hit
-	print(name, " was hit for ", damage, " damage.", health, " total health remaining.")
+	print(name, " was hit for ", damage, " damage. ", health, " total health remaining.")
 	health -= damage
 	was_hit = true
-	
+
+func heal_over_time():
+	if follow_target == null and health < data.max_health:
+		if heal_timer.is_stopped():
+			heal_timer.start()
+	if follow_target != null or health >= data.max_health:
+		heal_timer.stop()
 
 func set_knockback_position():
 	var knockback_direction = Vector2.DOWN
@@ -291,8 +293,8 @@ func _on_global_attack_cooldown_timer_timeout():
 
 
 func _on_heal_timer_timeout():
-	health += 10
-	print(name, " has healed 10 points for a total of ", health, " health.")
-	if health >= 100:
-		health = 100
+	health += data.heal_amount
+	print(name, " has healed ", data.heal_amount," points for a total of ", health, " health.")
+	if health >= data.max_health:
+		health = data.max_health
 		heal_timer.stop()

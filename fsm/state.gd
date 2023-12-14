@@ -28,3 +28,6 @@ func in_attack_range_transition():
 
 func was_hit_transition():
 	Transitioned.emit(self, "hurt")
+
+func on_target_null_transition():
+	pass

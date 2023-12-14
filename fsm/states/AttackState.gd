@@ -7,6 +7,7 @@ class_name AttackState
 @export var attack_effects : AnimatedSprite2D
 
 @export var attack_finished_transition_state : State
+@export var on_target_null_transition_state : State
 
 @export var comboCount = 1
 
@@ -27,12 +28,18 @@ func enter():
 func exit():
 	if not telegraph_timer.is_stopped():
 		telegraph_timer.stop()
+	if not end_attack_timer.is_stopped():
+		end_attack_timer.stop()
+	
 	actor.move_speed = 0
 	actor.stop()
 	actor.nav_agent.avoidance_enabled = true
 	currentComboCount = 0
 
 func physics_update(_delta : float):
+	if actor.follow_target == null:
+		on_target_null_transition()
+	
 	if not end_attack_timer.is_stopped():
 		actor.move(_delta)
 
@@ -68,3 +75,6 @@ func start_telegraph():
 	telegraph_timer.wait_time = randf_range(telegraph_time, telegraph_time * 2)
 	telegraph_timer.start()
 	actor.play_attack_telegraph()
+
+func on_target_null_transition():
+	Transitioned.emit(self, on_target_null_transition_state.name.to_lower())
