@@ -1,39 +1,39 @@
 extends State
 class_name IdleState
 
-@export var actor : AIActor
-
 @onready var wait_timer = $WaitTimer
 
 func enter():
-	if actor == null:
-		push_error("actor not assigned to Idle State, exiting state...")
-		return
-	
 	wait_timer.start()
+	
+	if owner.is_node_ready():
+		if owner.health.health_condition != Health.Condition.FULL:
+			owner.health.start_healing()
 
 func exit():
 	if not wait_timer.is_stopped():
 		wait_timer.stop()
+	
+	owner.health.stop_healing()
 
 func physics_update(_delta : float):
-	if actor.has_reached_destination():
+	if owner.has_reached_destination():
 		if wait_timer.is_stopped():
-			actor.stop()
+			owner.stop()
 			wait_timer.start()
 	else:
-		actor.move(_delta)
+		owner.move(_delta)
 	
-	actor.set_animation_based_on_velocity()
+	owner.set_animation_based_on_velocity()
 	
 
 func _on_timer_timeout():
-	actor.set_wander_position()
+	owner.set_wander_position()
 
 func on_detect_enter_transition(_detected_body):
-	actor.follow_target = _detected_body
+	owner.follow_target = _detected_body
 	
-	if actor.health < 30:
+	if owner.health.health_condition == Health.Condition.CRITICAL:
 		Transitioned.emit(self, "flee")
 	else:
 		Transitioned.emit(self, "follow")

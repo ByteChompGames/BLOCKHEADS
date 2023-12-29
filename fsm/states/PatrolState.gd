@@ -1,8 +1,6 @@
 extends State
 class_name PatrolState
 
-@export var actor : AIActor
-
 var left_point_not_reached = false
 
 @onready var patrol_timer = $PatrolTimer
@@ -11,31 +9,37 @@ func _ready():
 	patrol_timer.start()
 
 func enter():
-	if actor == null:
+	if owner == null:
 		push_error("Actor not assigned to Patrol State.")
 	
 	if left_point_not_reached:
-		actor.resume_patrol()
+		owner.resume_patrol()
 		left_point_not_reached = false
+	
+	if owner.is_node_ready():
+		if owner.health.health_condition != Health.Condition.FULL:
+			owner.health.start_healing()
 
 func physics_update(_delta : float):
-	if actor.has_reached_destination():
-		actor.stop()
+	if owner.has_reached_destination():
+		owner.stop()
 		if patrol_timer.is_stopped():
 			patrol_timer.start()
 	else:
-		actor.move(_delta)
+		owner.move(_delta)
 	
-	actor.set_animation_based_on_velocity()
+	owner.set_animation_based_on_velocity()
 
 func exit():
 	if not patrol_timer.is_stopped():
 		patrol_timer.stop()
+	
+		owner.health.stop_healing()
 
 func on_detect_enter_transition(_detected_body):
-	actor.follow_target = _detected_body
+	owner.follow_target = _detected_body
 	
-	if actor.health < 30:
+	if owner.health.health_condition == Health.Condition.CRITICAL:
 		Transitioned.emit(self, "flee")
 		check_point_not_reached()
 	else:
@@ -43,11 +47,11 @@ func on_detect_enter_transition(_detected_body):
 		check_point_not_reached()
 
 func check_point_not_reached():
-	if actor.has_reached_destination():
+	if owner.has_reached_destination():
 		left_point_not_reached = false
 	else:
 		left_point_not_reached = true
-		actor.pause_patrol()
+		owner.pause_patrol()
 
 func _on_patrol_timer_timeout():
-	actor.set_next_patrol_position()
+	owner.set_next_patrol_position()

@@ -1,15 +1,13 @@
 extends State
 class_name RunState
 
-@export var actor : AIActor
-
 @export var repath_range: Vector2 = Vector2(1, 3)
 
 @onready var repath_timer = $RepathTimer
 
 func enter():
-	if actor == null:
-		push_error("actor not assigned to Idle State, exiting state...")
+	if owner == null:
+		push_error("owner not assigned to Idle State, exiting state...")
 		return
 	
 	repath_timer.wait_time = randf_range(repath_range.x, repath_range.y)
@@ -20,13 +18,13 @@ func exit():
 		repath_timer.stop()
 
 func physics_update(_delta : float):
-	if actor.has_reached_destination():
-			actor.stop()
+	if owner.has_reached_destination():
+			owner.stop()
 	else:
-		actor.move(_delta)
+		owner.move(_delta)
 	
-	actor.set_animation_based_on_velocity()
+	owner.set_animation_based_on_velocity()
 
 func _on_repath_timer_timeout():
 	repath_timer.wait_time = randf_range(repath_range.x, repath_range.y)
-	actor.set_run_position()
+	owner.set_run_position()

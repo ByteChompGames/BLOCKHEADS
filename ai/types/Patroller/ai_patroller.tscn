@@ -1,8 +1,9 @@
-[gd_scene load_steps=32 format=3 uid="uid://msp6k3yyjw2g"]
+[gd_scene load_steps=33 format=3 uid="uid://msp6k3yyjw2g"]
 
 [ext_resource type="Script" path="res://ai/ai_actor.gd" id="1_wr68w"]
 [ext_resource type="Texture2D" uid="uid://cgfkce2s0ylyl" path="res://art/CharacterSpriteSheet.png" id="2_tor0j"]
 [ext_resource type="PackedScene" uid="uid://dtdutjtydoob5" path="res://ai/components/hurtbox.tscn" id="3_on4kj"]
+[ext_resource type="PackedScene" uid="uid://c8tinu0w087ft" path="res://ai/components/health.tscn" id="3_y7pme"]
 [ext_resource type="PackedScene" uid="uid://c5wnijgvhdwmi" path="res://fsm/state_machine.tscn" id="4_lvuy4"]
 [ext_resource type="PackedScene" uid="uid://dkt5fmgjt38ag" path="res://fsm/states/patrol.tscn" id="5_ljl86"]
 [ext_resource type="PackedScene" uid="uid://cdkexnalcke6j" path="res://fsm/states/follow.tscn" id="6_ukil1"]
@@ -193,6 +194,8 @@ path_desired_distance = 24.0
 target_desired_distance = 24.0
 avoidance_enabled = true
 
+[node name="Health" parent="." instance=ExtResource("3_y7pme")]
+
 [node name="Hurtbox" parent="." instance=ExtResource("3_on4kj")]
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Hurtbox"]
@@ -202,15 +205,12 @@ shape = SubResource("CapsuleShape2D_n5ef3")
 [node name="StateMachine" parent="." node_paths=PackedStringArray("initial_state") instance=ExtResource("4_lvuy4")]
 initial_state = NodePath("Patrol")
 
-[node name="Patrol" parent="StateMachine" node_paths=PackedStringArray("actor") instance=ExtResource("5_ljl86")]
-actor = NodePath("../..")
+[node name="Patrol" parent="StateMachine" instance=ExtResource("5_ljl86")]
 
-[node name="Follow" parent="StateMachine" node_paths=PackedStringArray("actor", "on_detect_lost_transition_state") instance=ExtResource("6_ukil1")]
-actor = NodePath("../..")
+[node name="Follow" parent="StateMachine" node_paths=PackedStringArray("on_detect_lost_transition_state") instance=ExtResource("6_ukil1")]
 on_detect_lost_transition_state = NodePath("../Investigate")
 
-[node name="Attack" parent="StateMachine" node_paths=PackedStringArray("actor", "animator", "hitbox_shape", "attack_effects", "attack_finished_transition_state", "on_target_null_transition_state") instance=ExtResource("7_fa68t")]
-actor = NodePath("../..")
+[node name="Attack" parent="StateMachine" node_paths=PackedStringArray("animator", "hitbox_shape", "attack_effects", "attack_finished_transition_state", "on_target_null_transition_state") instance=ExtResource("7_fa68t")]
 animator = NodePath("../../AnimatedSprite2D")
 hitbox_shape = NodePath("../../MeleeAttack/Hitbox/CollisionShape2D")
 attack_effects = NodePath("../../MeleeAttack/Hitbox/AttackEffects")
@@ -218,20 +218,17 @@ attack_finished_transition_state = NodePath("../Follow")
 on_target_null_transition_state = NodePath("../Patrol")
 comboCount = 2
 
-[node name="Hurt" type="Node" parent="StateMachine" node_paths=PackedStringArray("actor")]
+[node name="Hurt" type="Node" parent="StateMachine"]
 script = ExtResource("8_wcga7")
-actor = NodePath("../..")
 
 [node name="KnockbackTimer" type="Timer" parent="StateMachine/Hurt"]
 wait_time = 0.25
 one_shot = true
 
-[node name="Flee" parent="StateMachine" node_paths=PackedStringArray("actor", "on_detect_lost_transition_state") instance=ExtResource("9_nq710")]
-actor = NodePath("../..")
+[node name="Flee" parent="StateMachine" node_paths=PackedStringArray("on_detect_lost_transition_state") instance=ExtResource("9_nq710")]
 on_detect_lost_transition_state = NodePath("../Investigate")
 
-[node name="Investigate" parent="StateMachine" node_paths=PackedStringArray("actor", "on_time_out_transition") instance=ExtResource("10_h1nyt")]
-actor = NodePath("../..")
+[node name="Investigate" parent="StateMachine" node_paths=PackedStringArray("on_time_out_transition") instance=ExtResource("10_h1nyt")]
 on_time_out_transition = NodePath("../Patrol")
 
 [node name="AvoidanceMap" parent="." instance=ExtResource("11_npps4")]
@@ -261,13 +258,10 @@ frame_progress = 0.11274
 [node name="GlobalAttackCooldownTimer" type="Timer" parent="."]
 one_shot = true
 
-[node name="HealTimer" type="Timer" parent="."]
-
 [connection signal="velocity_computed" from="NavigationAgent2D" to="." method="_on_navigation_agent_2d_velocity_computed" flags=18]
 [connection signal="timeout" from="StateMachine/Hurt/KnockbackTimer" to="StateMachine/Hurt" method="_on_knockback_timer_timeout" flags=18]
 [connection signal="body_entered" from="DetectionRange" to="StateMachine" method="_on_detection_range_body_entered" flags=18]
 [connection signal="body_exited" from="DetectionRange" to="StateMachine" method="_on_detection_range_body_exited" flags=18]
 [connection signal="timeout" from="GlobalAttackCooldownTimer" to="." method="_on_global_attack_cooldown_timer_timeout" flags=18]
-[connection signal="timeout" from="HealTimer" to="." method="_on_heal_timer_timeout" flags=18]
 
 [editable path="DetectionRange"]

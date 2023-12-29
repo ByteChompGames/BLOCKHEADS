@@ -14,7 +14,6 @@ enum AttackSide
 
 @export var wander_radius = 50
 
-var health = 100
 var move_speed = 0
 
 var pause_point : Vector2
@@ -38,15 +37,11 @@ var was_hit = false
 @onready var animated_sprite = $AnimatedSprite2D
 @onready var avoidance_map := $AvoidanceMap
 @onready var global_attack_cooldown_timer = $GlobalAttackCooldownTimer
-@onready var heal_timer = $HealTimer
+@onready var health = $Health
 
 func _ready():
 	attack_range = nav_agent.target_desired_distance * 2
-	health = data.max_health
-	heal_timer.wait_time = data.heal_rate
-
-func _process(delta):
-	heal_over_time()
+	health.initialize(data.max_health, data.heal_rate, data.heal_amount)
 
 func set_animation_based_on_velocity():
 	if move_speed < data.walk_speed:
@@ -222,19 +217,15 @@ func get_invesitgate_position():
 	keep_navigation_path_reachable()
 
 # Health & Damage
-func take_damage(damage : int):
+func receive_hit(damage : int):
 	# - set readable value to change state to hurt
 	# - get and store direction of hit
-	print(name, " was hit for ", damage, " damage. ", health, " total health remaining.")
-	health -= damage
+	health.receive_damage(damage)
+	print(name, " was hit for ", damage, " damage. ", health.current_health, " total health remaining.")
 	was_hit = true
 
-func heal_over_time():
-	if follow_target == null and health < data.max_health:
-		if heal_timer.is_stopped():
-			heal_timer.start()
-	if follow_target != null or health >= data.max_health:
-		heal_timer.stop()
+func die():
+	queue_free()
 
 func set_knockback_position():
 	var knockback_direction = Vector2.DOWN
@@ -290,11 +281,3 @@ func _on_navigation_agent_2d_velocity_computed(safe_velocity):
 
 func _on_global_attack_cooldown_timer_timeout():
 	in_attack_cooldown = false
-
-
-func _on_heal_timer_timeout():
-	health += data.heal_amount
-	print(name, " has healed ", data.heal_amount," points for a total of ", health, " health.")
-	if health >= data.max_health:
-		health = data.max_health
-		heal_timer.stop()

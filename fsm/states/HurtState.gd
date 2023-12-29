@@ -1,39 +1,38 @@
 extends State
 class_name HurtState
 
-@export var actor : AIActor
 @onready var knockback_timer = $KnockbackTimer
 
 func enter():
-	if actor == null:
-		push_error("actor not assigned to Follow State, exiting state...")
+	if owner == null:
+		push_error("owner not assigned to Follow State, exiting state...")
 	
-	actor.animated_sprite.play("hurt")
-	actor.nav_agent.avoidance_enabled = false
-	actor.move_speed = 100
-	actor.set_knockback_position()
-	actor.was_hit = false
+	owner.animated_sprite.play("hurt")
+	owner.nav_agent.avoidance_enabled = false
+	owner.move_speed = 100
+	owner.set_knockback_position()
+	owner.was_hit = false
 	
 	knockback_timer.start()
 
 func exit():
-	actor.nav_agent.avoidance_enabled = true
-	actor.move_speed = 0
-	actor.stop()
-	actor.set_animation_based_on_velocity()
+	owner.nav_agent.avoidance_enabled = true
+	owner.move_speed = 0
+	owner.stop()
+	owner.set_animation_based_on_velocity()
 
 func physics_update(_delta : float):
-	actor.move(_delta)
+	owner.move(_delta)
 
 
 func _on_knockback_timer_timeout():
-	if actor.health <= 0:
-		actor.queue_free()
+	if owner.health.health_condition == Health.Condition.DEAD:
+		owner.queue_free()
 		return
-	elif actor.health > 0 and actor.health <= 25:
+	elif owner.health.health_condition == Health.Condition.CRITICAL:
 		Transitioned.emit(self, "flee")
 	
-	if actor.is_in_attack_range() and not actor.in_attack_cooldown:
+	if owner.is_in_attack_range() and not owner.in_attack_cooldown:
 		Transitioned.emit(self, "attack")
 	else:
 		Transitioned.emit(self, "follow")

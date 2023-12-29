@@ -1,0 +1,10 @@
+[gd_scene load_steps=2 format=3 uid="uid://c8tinu0w087ft"]
+
+[ext_resource type="Script" path="res://ai/components/Health.gd" id="1_ye2oo"]
+
+[node name="Health" type="Node"]
+script = ExtResource("1_ye2oo")
+
+[node name="HealTimer" type="Timer" parent="."]
+
+[connection signal="timeout" from="HealTimer" to="." method="_on_heal_timer_timeout"]
