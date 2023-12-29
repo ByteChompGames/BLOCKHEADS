@@ -1,6 +1,9 @@
 extends State
 class_name PatrolState
 
+@export var on_detect_default_transition : State
+@export var on_detect_critical_transition : State
+
 var left_point_not_reached = false
 
 @onready var patrol_timer = $PatrolTimer
@@ -40,10 +43,10 @@ func on_detect_enter_transition(_detected_body):
 	owner.follow_target = _detected_body
 	
 	if owner.health.health_condition == Health.Condition.CRITICAL:
-		Transitioned.emit(self, "flee")
+		Transitioned.emit(self, on_detect_critical_transition.name.to_lower())
 		check_point_not_reached()
 	else:
-		Transitioned.emit(self, "follow")
+		Transitioned.emit(self, on_detect_default_transition.name.to_lower())
 		check_point_not_reached()
 
 func check_point_not_reached():

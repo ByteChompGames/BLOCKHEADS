@@ -1,12 +1,6 @@
 extends CharacterBody2D
 class_name AIActor
 
-enum AttackSide
-{
-	RIGHT,
-	LEFT
-}
-
 @export var data = preload("res://ai/default_ai_data.tres")
 
 @export var follow_target : AIActor
@@ -29,9 +23,9 @@ var clockwise = true
 
 var attack_range = 0
 var in_attack_cooldown = false
-var last_attack_side = AttackSide.LEFT
 
 var was_hit = false
+var hit_direction : Vector2 = Vector2.ZERO
 
 @onready var nav_agent = $NavigationAgent2D
 @onready var animated_sprite = $AnimatedSprite2D
@@ -42,14 +36,10 @@ var was_hit = false
 func _ready():
 	attack_range = nav_agent.target_desired_distance * 2
 	health.initialize(data.max_health, data.heal_rate, data.heal_amount)
+	animated_sprite.initialize(data.walk_speed, data.run_speed)
 
 func set_animation_based_on_velocity():
-	if move_speed < data.walk_speed:
-		animated_sprite.play("idle")
-	elif move_speed >= data.walk_speed and move_speed < data.run_speed:
-		animated_sprite.play("walk")
-	else:
-		animated_sprite.play("run")
+	animated_sprite.move(move_speed)
 
 # Movement
 
@@ -217,24 +207,17 @@ func get_invesitgate_position():
 	keep_navigation_path_reachable()
 
 # Health & Damage
-func receive_hit(damage : int):
-	# - set readable value to change state to hurt
-	# - get and store direction of hit
+func receive_hit(damage : int, direction : Vector2):
 	health.receive_damage(damage)
 	print(name, " was hit for ", damage, " damage. ", health.current_health, " total health remaining.")
 	was_hit = true
+	hit_direction = direction
 
 func die():
 	queue_free()
 
-func set_knockback_position():
-	var knockback_direction = Vector2.DOWN
-	
-	if follow_target != null:
-		knockback_direction = global_position - follow_target.global_position
-		knockback_direction = knockback_direction.normalized()
-	
-	nav_agent.target_position = global_position + (knockback_direction * (move_speed + nav_agent.target_desired_distance))
+func set_knockback_position(direction : Vector2):
+	nav_agent.target_position = global_position + (-direction * (move_speed + nav_agent.target_desired_distance))
 	keep_navigation_path_reachable()
 
 # Attacks
@@ -247,31 +230,6 @@ func is_in_attack_range() -> bool: # returns true if follow target is closer tha
 		return true
 	else:
 		return false
-	
-
-func perform_attack():
-	var attack_direction = Vector2.DOWN
-	if follow_target:
-		attack_direction = follow_target.global_position - global_position
-		attack_direction = attack_direction.normalized()
-	
-	$MeleeAttack.look_at(global_position + attack_direction)
-
-func play_attack_telegraph():
-	match last_attack_side:
-		AttackSide.LEFT:
-			animated_sprite.play("right_attack_tel")
-		AttackSide.RIGHT:
-			animated_sprite.play("left_attack_tel")
-
-func play_attack():
-	match last_attack_side:
-		AttackSide.LEFT:
-			animated_sprite.play("right_attack")
-			last_attack_side = AttackSide.RIGHT
-		AttackSide.RIGHT:
-			animated_sprite.play("left_attack")
-			last_attack_side = AttackSide.LEFT
 
 # NavigationAgent2D Signals
 func _on_navigation_agent_2d_velocity_computed(safe_velocity):

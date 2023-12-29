@@ -1,0 +1,22 @@
+[gd_scene load_steps=5 format=3 uid="uid://bm1gfcbmy315l"]
+
+[ext_resource type="Script" path="res://ai/components/attacks/Attack.gd" id="1_coe3h"]
+[ext_resource type="PackedScene" uid="uid://c276djd45tjlh" path="res://ai/components/hitbox.tscn" id="2_h77t8"]
+[ext_resource type="PackedScene" uid="uid://c6ek2ogevrtxk" path="res://ai/components/attacks/attack_effects.tscn" id="3_jo7cv"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_u0pcm"]
+radius = 6.0
+
+[node name="MeleeAttack" type="Node2D"]
+script = ExtResource("1_coe3h")
+
+[node name="Hitbox" parent="." instance=ExtResource("2_h77t8")]
+position = Vector2(14, 0)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Hitbox"]
+shape = SubResource("CircleShape2D_u0pcm")
+disabled = true
+
+[node name="AttackEffects" parent="Hitbox" instance=ExtResource("3_jo7cv")]
+z_index = 20
+rotation = -1.5708

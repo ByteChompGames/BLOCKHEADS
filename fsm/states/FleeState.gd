@@ -23,6 +23,7 @@ func on_detect_exit_transition(_detected_body):
 	owner.target_detect_state = self
 	owner.set_last_known_direction(_detected_body.global_position)
 	Transitioned.emit(self, on_detect_lost_transition_state.name.to_lower())
+	owner.follow_target = null
 
 func _on_flee_timer_timeout():
 	owner.set_flee_position()

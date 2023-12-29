@@ -1,30 +1,32 @@
 extends State
 class_name AttackState
 
-@export var animator : AnimatedSprite2D
-@export var hitbox_shape : CollisionShape2D
-@export var attack_effects : AnimatedSprite2D
-
 @export var attack_finished_transition_state : State
-@export var on_target_null_transition_state : State
+@export var target_null_transition : State
 
-@export var comboCount = 1
+@export var comboCount : int = 1
 
-var currentComboCount = 0
-var telegraph_time = 0.5
+@export var available_attacks : Array[Attack]
+var selected_attack : Attack
+
+var currentComboCount : int = 0
 
 @onready var telegraph_timer = $TelegraphTimer
 @onready var end_attack_timer = $EndAttackTimer
 
 func enter():
-	if owner == null:
-		push_error("owner not assigned to Follow State, exiting state...")
+	# select an attack
+	select_attack();
+	# set values to match select attack
+	telegraph_timer.wait_time = selected_attack.telegraph_time
+	end_attack_timer.wait_time = selected_attack.end_attack_time
 	
 	owner.nav_agent.avoidance_enabled = false
-	attack_effects.animation = "wave"
 	start_telegraph()
 
 func exit():
+	selected_attack.toggle_hitbox(false)
+	
 	if not telegraph_timer.is_stopped():
 		telegraph_timer.stop()
 	if not end_attack_timer.is_stopped():
@@ -42,23 +44,49 @@ func physics_update(_delta : float):
 	if not end_attack_timer.is_stopped():
 		owner.move(_delta)
 
+func select_attack():
+	if available_attacks.size() == 0: # cannot select an attack if no attacks available
+		print("No attacks available to ", owner.name, ". Leaving Attack State.")
+		Transitioned.emit(self, attack_finished_transition_state.name.to_lower())
+		return
+	
+	var select_id = 0 # default to first option
+	if available_attacks.size() > 1: # if more options are available
+		select_id = randi_range(0, available_attacks.size() - 1) # select a random attack
+		
+	selected_attack = available_attacks[select_id] # set selected attack based on id
+
+#returns the direction the attack should be performed
+func get_attack_direction() -> Vector2:
+	var attack_direction = Vector2.DOWN # default value to down
+	
+	if owner.follow_target: # if attacker has a target
+		attack_direction = owner.follow_target.global_position - owner.global_position # get direction to target
+		attack_direction = attack_direction.normalized() # normalize direction
+	
+	return attack_direction 
+
 func was_hit_transition():
 	if end_attack_timer.is_stopped():
 		Transitioned.emit(self, "hurt")
+	else:
+		owner.was_hit = false
+
+func on_target_null_transition():
+	Transitioned.emit(self, target_null_transition.name.to_lower())
 
 func _on_telegraph_timer_timeout():
-	owner.play_attack()
+	selected_attack.perform_attack(get_attack_direction()) # attack in given direction
+	
+	owner.animated_sprite.play_attack()
 	owner.move_speed = 100
 	owner.set_follow_position()
-	owner.perform_attack()
-	hitbox_shape.set_deferred("disabled", false)
-	attack_effects.play("wave")
 	end_attack_timer.start()
 
 
 func _on_end_attack_timer_timeout():
 	owner.move_speed = 0
-	hitbox_shape.set_deferred("disabled", true)
+	selected_attack.toggle_hitbox(false)
 	currentComboCount += 1
 	
 	if currentComboCount < comboCount:
@@ -69,11 +97,7 @@ func _on_end_attack_timer_timeout():
 		Transitioned.emit(self, attack_finished_transition_state.name.to_lower())
 
 func start_telegraph():
-	hitbox_shape.set_deferred("disabled", true)
-	
-	telegraph_timer.wait_time = randf_range(telegraph_time, telegraph_time * 2)
+	selected_attack.toggle_hitbox(false)
+	telegraph_timer.wait_time = randf_range(selected_attack.telegraph_time, selected_attack.telegraph_time * 2)
 	telegraph_timer.start()
-	owner.play_attack_telegraph()
-
-func on_target_null_transition():
-	Transitioned.emit(self, on_target_null_transition_state.name.to_lower())
+	owner.animated_sprite.telegraph_attack()

@@ -17,13 +17,16 @@ func _ready():
 
 func _process(delta):
 	if current_state:
+		if owner.follow_target == null:
+			current_state.on_target_null_transition()
+		
 		current_state.update(delta)
-		if owner.was_hit:
-			current_state.was_hit_transition()
 
 func _physics_process(delta):
 	if current_state:
 		current_state.physics_update(delta)
+		if owner.was_hit:
+			current_state.was_hit_transition()
 
 func on_child_transitioned(state, new_state_name):
 	if state != current_state:
@@ -50,8 +53,12 @@ func _on_detection_range_body_entered(body):
 
 
 func _on_detection_range_body_exited(body):
-	if body == owner:
+	if body == owner: # do not detect self
+		return
+	
+	if owner.follow_target == null: # do not detect exit if not follow target
 		return
 	
 	if body.is_in_group("actor"):
-		current_state.on_detect_exit_transition(body)
+		if body == owner.follow_target:
+			current_state.on_detect_exit_transition(body)

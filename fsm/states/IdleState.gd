@@ -1,6 +1,9 @@
 extends State
 class_name IdleState
 
+@export var on_detect_default_transition : State
+@export var on_detect_critical_transition : State
+
 @onready var wait_timer = $WaitTimer
 
 func enter():
@@ -34,7 +37,7 @@ func on_detect_enter_transition(_detected_body):
 	owner.follow_target = _detected_body
 	
 	if owner.health.health_condition == Health.Condition.CRITICAL:
-		Transitioned.emit(self, "flee")
+		Transitioned.emit(self, on_detect_critical_transition.name.to_lower())
 	else:
-		Transitioned.emit(self, "follow")
+		Transitioned.emit(self, on_detect_default_transition.name.to_lower())
 	

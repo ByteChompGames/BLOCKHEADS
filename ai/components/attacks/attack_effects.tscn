@@ -24,7 +24,10 @@ region = Rect2(64, 0, 16, 16)
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_7ce8s"]
 animations = [{
-"frames": [],
+"frames": [{
+"duration": 1.0,
+"texture": null
+}],
 "loop": true,
 "name": &"nothing",
 "speed": 5.0
@@ -56,7 +59,5 @@ animations = [{
 [node name="AttackEffects" type="AnimatedSprite2D"]
 texture_filter = 1
 sprite_frames = SubResource("SpriteFrames_7ce8s")
-animation = &"wave"
+animation = &"nothing"
 autoplay = "nothing"
-frame = 5
-frame_progress = 1.0

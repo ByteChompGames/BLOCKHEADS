@@ -1,20 +1,20 @@
-[gd_scene load_steps=33 format=3 uid="uid://ciw2tmdy1hnc6"]
+[gd_scene load_steps=32 format=3 uid="uid://ciw2tmdy1hnc6"]
 
 [ext_resource type="Texture2D" uid="uid://cgfkce2s0ylyl" path="res://art/CharacterSpriteSheet.png" id="1_4pvmd"]
 [ext_resource type="Script" path="res://ai/ai_actor.gd" id="1_hcyw6"]
 [ext_resource type="PackedScene" uid="uid://c8tinu0w087ft" path="res://ai/components/health.tscn" id="3_03lkr"]
 [ext_resource type="PackedScene" uid="uid://bela8ivbqbepi" path="res://ai/components/avoidance_map.tscn" id="3_8fgeq"]
 [ext_resource type="PackedScene" uid="uid://dtdutjtydoob5" path="res://ai/components/hurtbox.tscn" id="3_63ai6"]
+[ext_resource type="Script" path="res://ai/components/AIAnimator.gd" id="3_jusl5"]
 [ext_resource type="PackedScene" uid="uid://c5wnijgvhdwmi" path="res://fsm/state_machine.tscn" id="4_oapu4"]
 [ext_resource type="PackedScene" uid="uid://bvopfcgs6fsb2" path="res://fsm/states/idle.tscn" id="5_bryg5"]
 [ext_resource type="PackedScene" uid="uid://cdkexnalcke6j" path="res://fsm/states/follow.tscn" id="6_2c6q0"]
 [ext_resource type="PackedScene" uid="uid://bbwjmx6vvnka5" path="res://fsm/states/attack.tscn" id="7_pftqi"]
 [ext_resource type="Script" path="res://fsm/states/HurtState.gd" id="8_4vm7q"]
 [ext_resource type="PackedScene" uid="uid://gt0junxxlrpj" path="res://ai/components/detection_range.tscn" id="9_17brq"]
-[ext_resource type="PackedScene" uid="uid://c276djd45tjlh" path="res://ai/components/hitbox.tscn" id="9_fdeyr"]
 [ext_resource type="PackedScene" uid="uid://drinc02y11xps" path="res://fsm/states/flee.tscn" id="9_qg4yy"]
 [ext_resource type="PackedScene" uid="uid://d4a1bvvirc1kb" path="res://fsm/states/investigate.tscn" id="10_bgm3j"]
-[ext_resource type="PackedScene" uid="uid://c6ek2ogevrtxk" path="res://ai/components/attack_effects.tscn" id="10_mflq4"]
+[ext_resource type="PackedScene" uid="uid://bm1gfcbmy315l" path="res://ai/components/attacks/melee_attack.tscn" id="10_hnq12"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_jxsb6"]
 atlas = ExtResource("1_4pvmd")
@@ -156,9 +156,6 @@ height = 14.0
 [sub_resource type="CircleShape2D" id="CircleShape2D_yemqb"]
 radius = 48.0
 
-[sub_resource type="CircleShape2D" id="CircleShape2D_u0pcm"]
-radius = 6.0
-
 [node name="AIActor" type="CharacterBody2D" groups=["actor"]]
 collision_layer = 2
 motion_mode = 1
@@ -172,6 +169,7 @@ texture_filter = 1
 sprite_frames = SubResource("SpriteFrames_yue47")
 animation = &"hurt"
 autoplay = "idle"
+script = ExtResource("3_jusl5")
 
 [node name="DropShadow" type="Sprite2D" parent="."]
 modulate = Color(1, 1, 1, 0.196078)
@@ -208,11 +206,9 @@ initial_state = NodePath("Idle")
 [node name="Follow" parent="StateMachine" node_paths=PackedStringArray("on_detect_lost_transition_state") instance=ExtResource("6_2c6q0")]
 on_detect_lost_transition_state = NodePath("../Investigate")
 
-[node name="Attack" parent="StateMachine" node_paths=PackedStringArray("animator", "hitbox_shape", "attack_effects", "attack_finished_transition_state") instance=ExtResource("7_pftqi")]
-animator = NodePath("../../AnimatedSprite2D")
-hitbox_shape = NodePath("../../MeleeAttack/Hitbox/CollisionShape2D")
-attack_effects = NodePath("../../MeleeAttack/Hitbox/AttackEffects")
+[node name="Attack" parent="StateMachine" node_paths=PackedStringArray("attack_finished_transition_state", "available_attacks") instance=ExtResource("7_pftqi")]
 attack_finished_transition_state = NodePath("../Follow")
+available_attacks = [null]
 
 [node name="Hurt" type="Node" parent="StateMachine"]
 script = ExtResource("8_4vm7q")
@@ -237,20 +233,7 @@ collision_mask = 2
 [node name="CollisionShape2D" parent="DetectionRange" index="0"]
 shape = SubResource("CircleShape2D_yemqb")
 
-[node name="MeleeAttack" type="Node2D" parent="."]
-
-[node name="Hitbox" parent="MeleeAttack" instance=ExtResource("9_fdeyr")]
-position = Vector2(14, 0)
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="MeleeAttack/Hitbox"]
-shape = SubResource("CircleShape2D_u0pcm")
-disabled = true
-
-[node name="AttackEffects" parent="MeleeAttack/Hitbox" instance=ExtResource("10_mflq4")]
-z_index = 20
-rotation = -1.5708
-frame = 0
-frame_progress = 0.0
+[node name="MeleeAttack" parent="." instance=ExtResource("10_hnq12")]
 
 [node name="GlobalAttackCooldownTimer" type="Timer" parent="."]
 one_shot = true

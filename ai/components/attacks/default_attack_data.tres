@@ -1,0 +1,8 @@
+[gd_resource type="Resource" script_class="AttackData" load_steps=2 format=3 uid="uid://b0sjfmnl41raa"]
+
+[ext_resource type="Script" path="res://ai/components/attacks/AttackData.gd" id="1_7id2f"]
+
+[resource]
+script = ExtResource("1_7id2f")
+telegraph_time = 0.5
+end_attack_time = 0.5
