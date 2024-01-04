@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="AIData" load_steps=2 format=3 uid="uid://bluaajb6af5vx"]
+
+[ext_resource type="Script" path="res://ai/AIData.gd" id="1_dwa5e"]
+
+[resource]
+script = ExtResource("1_dwa5e")
+walk_speed = 25
+run_speed = 60
+max_health = 70
+heal_amount = 5
+heal_rate = 1

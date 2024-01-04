@@ -5,4 +5,4 @@
 [resource]
 script = ExtResource("1_7id2f")
 telegraph_time = 0.5
-end_attack_time = 0.5
+end_attack_time = 0.25

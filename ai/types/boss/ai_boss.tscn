@@ -1,0 +1,264 @@
+[gd_scene load_steps=32 format=3 uid="uid://d1pbp3bhxxgre"]
+
+[ext_resource type="Script" path="res://ai/ai_actor.gd" id="1_vellu"]
+[ext_resource type="Resource" uid="uid://j63ewku08702" path="res://ai/boss_ai_data.tres" id="2_l8ohj"]
+[ext_resource type="Texture2D" uid="uid://cgfkce2s0ylyl" path="res://art/CharacterSpriteSheet.png" id="3_oy242"]
+[ext_resource type="Script" path="res://ai/components/AIAnimator.gd" id="4_gocg6"]
+[ext_resource type="PackedScene" uid="uid://c8tinu0w087ft" path="res://ai/components/health.tscn" id="5_ry7qr"]
+[ext_resource type="PackedScene" uid="uid://dtdutjtydoob5" path="res://ai/components/hurtbox.tscn" id="6_1ed5g"]
+[ext_resource type="PackedScene" uid="uid://c5wnijgvhdwmi" path="res://fsm/state_machine.tscn" id="7_hkblm"]
+[ext_resource type="PackedScene" uid="uid://bvopfcgs6fsb2" path="res://fsm/states/idle.tscn" id="8_dbf5l"]
+[ext_resource type="PackedScene" uid="uid://cdkexnalcke6j" path="res://fsm/states/follow.tscn" id="9_yb0ox"]
+[ext_resource type="PackedScene" uid="uid://bbwjmx6vvnka5" path="res://fsm/states/attack.tscn" id="10_a58ic"]
+[ext_resource type="Script" path="res://fsm/states/HurtState.gd" id="11_50cd1"]
+[ext_resource type="PackedScene" uid="uid://drinc02y11xps" path="res://fsm/states/flee.tscn" id="12_0jxbj"]
+[ext_resource type="PackedScene" uid="uid://bela8ivbqbepi" path="res://ai/components/avoidance_map.tscn" id="13_b0cke"]
+[ext_resource type="PackedScene" uid="uid://gt0junxxlrpj" path="res://ai/components/detection_range.tscn" id="14_okf2i"]
+[ext_resource type="PackedScene" uid="uid://bm1gfcbmy315l" path="res://ai/components/attacks/melee_attack.tscn" id="15_vye32"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_jxsb6"]
+atlas = ExtResource("3_oy242")
+region = Rect2(64, 16, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_tbfps"]
+atlas = ExtResource("3_oy242")
+region = Rect2(0, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ekxi0"]
+atlas = ExtResource("3_oy242")
+region = Rect2(16, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_axgvl"]
+atlas = ExtResource("3_oy242")
+region = Rect2(48, 16, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_orxyp"]
+atlas = ExtResource("3_oy242")
+region = Rect2(32, 16, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_vver2"]
+atlas = ExtResource("3_oy242")
+region = Rect2(16, 16, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_bb6o8"]
+atlas = ExtResource("3_oy242")
+region = Rect2(0, 16, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_l1au2"]
+atlas = ExtResource("3_oy242")
+region = Rect2(64, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_2fmn4"]
+atlas = ExtResource("3_oy242")
+region = Rect2(0, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_sqh86"]
+atlas = ExtResource("3_oy242")
+region = Rect2(80, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_qhfdt"]
+atlas = ExtResource("3_oy242")
+region = Rect2(32, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_300ok"]
+atlas = ExtResource("3_oy242")
+region = Rect2(48, 0, 16, 16)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_yue47"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_jxsb6")
+}],
+"loop": true,
+"name": &"hurt",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_tbfps")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ekxi0")
+}],
+"loop": true,
+"name": &"idle",
+"speed": 2.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_axgvl")
+}],
+"loop": true,
+"name": &"left_attack",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_orxyp")
+}],
+"loop": true,
+"name": &"left_attack_tel",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_vver2")
+}],
+"loop": true,
+"name": &"right_attack",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_bb6o8")
+}],
+"loop": true,
+"name": &"right_attack_tel",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_l1au2")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_2fmn4")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_sqh86")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_2fmn4")
+}],
+"loop": true,
+"name": &"run",
+"speed": 6.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_qhfdt")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_300ok")
+}],
+"loop": true,
+"name": &"walk",
+"speed": 3.0
+}]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_gnndl"]
+size = Vector2(25, 32)
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_n5ef3"]
+radius = 13.0
+height = 32.0
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_yemqb"]
+radius = 48.0
+
+[node name="AI_Boss" type="CharacterBody2D" groups=["actor"]]
+position = Vector2(296, 215)
+collision_layer = 2
+motion_mode = 1
+wall_min_slide_angle = 0.0
+script = ExtResource("1_vellu")
+data = ExtResource("2_l8ohj")
+wander_radius = 150
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+modulate = Color(1, 0.435294, 0.552941, 1)
+z_index = 10
+z_as_relative = false
+texture_filter = 1
+scale = Vector2(2.5, 2.5)
+sprite_frames = SubResource("SpriteFrames_yue47")
+animation = &"idle"
+autoplay = "idle"
+script = ExtResource("4_gocg6")
+
+[node name="DropShadow" type="Sprite2D" parent="."]
+modulate = Color(1, 1, 1, 0.196078)
+z_index = 5
+z_as_relative = false
+texture_filter = 1
+position = Vector2(0, 7)
+texture = ExtResource("3_oy242")
+region_enabled = true
+region_rect = Rect2(82, 27, 12, 4)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0.5, 1)
+shape = SubResource("RectangleShape2D_gnndl")
+
+[node name="NavigationAgent2D" type="NavigationAgent2D" parent="."]
+path_desired_distance = 60.0
+target_desired_distance = 60.0
+avoidance_enabled = true
+
+[node name="Health" parent="." instance=ExtResource("5_ry7qr")]
+
+[node name="Hurtbox" parent="." instance=ExtResource("6_1ed5g")]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Hurtbox"]
+z_index = 100
+shape = SubResource("CapsuleShape2D_n5ef3")
+
+[node name="StateMachine" parent="." node_paths=PackedStringArray("initial_state") instance=ExtResource("7_hkblm")]
+initial_state = NodePath("Idle")
+
+[node name="Idle" parent="StateMachine" node_paths=PackedStringArray("on_detect_default_transition", "on_detect_critical_transition") instance=ExtResource("8_dbf5l")]
+on_detect_default_transition = NodePath("../Follow")
+on_detect_critical_transition = NodePath("../Flee")
+
+[node name="Follow" parent="StateMachine" node_paths=PackedStringArray("on_detect_lost_transition_state") instance=ExtResource("9_yb0ox")]
+on_detect_lost_transition_state = NodePath("../Idle")
+
+[node name="Attack" parent="StateMachine" node_paths=PackedStringArray("attack_finished_transition_state", "target_null_transition", "available_attacks") instance=ExtResource("10_a58ic")]
+attack_finished_transition_state = NodePath("../Follow")
+target_null_transition = NodePath("../Idle")
+comboCount = 3
+available_attacks = [NodePath("../../MeleeAttack")]
+
+[node name="Hurt" type="Node" parent="StateMachine"]
+script = ExtResource("11_50cd1")
+
+[node name="KnockbackTimer" type="Timer" parent="StateMachine/Hurt"]
+wait_time = 0.25
+one_shot = true
+
+[node name="Flee" parent="StateMachine" node_paths=PackedStringArray("on_detect_lost_transition_state") instance=ExtResource("12_0jxbj")]
+on_detect_lost_transition_state = NodePath("../Idle")
+
+[node name="AvoidanceMap" parent="." instance=ExtResource("13_b0cke")]
+tick_rate = 0.2
+
+[node name="DetectionRange" parent="." instance=ExtResource("14_okf2i")]
+scale = Vector2(2, 2)
+collision_layer = 2
+collision_mask = 2
+
+[node name="CollisionShape2D" parent="DetectionRange" index="0"]
+shape = SubResource("CircleShape2D_yemqb")
+
+[node name="MeleeAttack" parent="." instance=ExtResource("15_vye32")]
+
+[node name="Hitbox" parent="MeleeAttack" index="0"]
+position = Vector2(31, 0)
+
+[node name="CollisionShape2D" parent="MeleeAttack/Hitbox" index="0"]
+scale = Vector2(2.5, 2.5)
+
+[node name="AttackEffects" parent="MeleeAttack/Hitbox" index="1"]
+scale = Vector2(2.5, 2.5)
+
+[node name="GlobalAttackCooldownTimer" type="Timer" parent="."]
+one_shot = true
+
+[connection signal="velocity_computed" from="NavigationAgent2D" to="." method="_on_navigation_agent_2d_velocity_computed" flags=18]
+[connection signal="timeout" from="StateMachine/Hurt/KnockbackTimer" to="StateMachine/Hurt" method="_on_knockback_timer_timeout" flags=18]
+[connection signal="body_entered" from="DetectionRange" to="StateMachine" method="_on_detection_range_body_entered" flags=18]
+[connection signal="body_exited" from="DetectionRange" to="StateMachine" method="_on_detection_range_body_exited" flags=18]
+[connection signal="timeout" from="GlobalAttackCooldownTimer" to="." method="_on_global_attack_cooldown_timer_timeout" flags=18]
+
+[editable path="DetectionRange"]
+[editable path="MeleeAttack"]

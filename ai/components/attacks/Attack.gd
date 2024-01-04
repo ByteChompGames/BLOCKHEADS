@@ -7,8 +7,6 @@ signal on_start_attack
 @export var data = preload("res://ai/components/attacks/default_attack_data.tres")
 
 var attack_range : float = 0
-var telegraph_time : float = 0
-var end_attack_time : float = 0
 
 @onready var hitbox = $Hitbox
 @onready var hitbox_shape = $Hitbox/CollisionShape2D
@@ -17,9 +15,6 @@ var end_attack_time : float = 0
 func _ready():
 	if owner != null:
 		hitbox.attack_owner = owner
-	
-	telegraph_time = data.telegraph_time
-	end_attack_time = data.end_attack_time
 
 func is_in_range(distance : float) -> bool:
 	if distance <= attack_range:
@@ -29,9 +24,9 @@ func is_in_range(distance : float) -> bool:
 
 func toggle_hitbox(is_active : bool):
 	if is_active:
-		hitbox_shape.set_deferred("disabled", true)
-	else:
 		hitbox_shape.set_deferred("disabled", false)
+	else:
+		hitbox_shape.set_deferred("disabled", true)
 
 func perform_attack(direction : Vector2):
 	toggle_hitbox(true)

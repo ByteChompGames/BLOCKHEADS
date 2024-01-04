@@ -7,6 +7,7 @@ class_name AIActor
 @export var patrol_path : PatrolPath
 
 @export var wander_radius = 50
+@export var attack_range_multiplier = 1.5
 
 var move_speed = 0
 
@@ -34,7 +35,7 @@ var hit_direction : Vector2 = Vector2.ZERO
 @onready var health = $Health
 
 func _ready():
-	attack_range = nav_agent.target_desired_distance * 2
+	attack_range = nav_agent.target_desired_distance * attack_range_multiplier
 	health.initialize(data.max_health, data.heal_rate, data.heal_amount)
 	animated_sprite.initialize(data.walk_speed, data.run_speed)
 
@@ -83,10 +84,20 @@ func move(delta : float):
 	else:
 		_on_navigation_agent_2d_velocity_computed(velocity)
 
+func simple_move():
+	var direction = to_local(nav_agent.get_next_path_position()).normalized() # set move direction to next point on navigation path
+	velocity = direction * move_speed
+	
+	if nav_agent.avoidance_enabled:
+		nav_agent.set_velocity(velocity)
+	else:
+		_on_navigation_agent_2d_velocity_computed(velocity)
+
 func stop():
 	move_speed = 0
+	nav_agent.target_position = global_position
 	if nav_agent.avoidance_enabled:
-		nav_agent.set_velocity(Vector2.ZERO)
+		nav_agent.set_velocity(Vector2.ZERO) 
 	else:
 		_on_navigation_agent_2d_velocity_computed(Vector2.ZERO)
 

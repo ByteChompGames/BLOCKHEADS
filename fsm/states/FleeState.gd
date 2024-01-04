@@ -8,6 +8,7 @@ class_name FleeState
 
 func enter():
 	
+	owner.set_flee_position()
 	flee_timer.start()
 	#switch_direction_timer.start()
 
